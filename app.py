@@ -2,7 +2,8 @@ import os
 import json
 import csv
 import io
-from flask import Flask, render_template, jsonify, Response
+from flask import Flask, render_template, jsonify, Response, request # MODIFIED: import request
+import uuid # NEW: To generate unique IDs for new books
 
 # MODIFIED: Import the single data_store instance instead of the old variables.
 from src.books import data_store
@@ -38,6 +39,27 @@ def vote(book_id):
         data_store.votes[book_id] += 1
         return jsonify(success=True, message=f"Vote counted for {book_id}")
     return jsonify(success=False, message="Book ID not found"), 404
+
+# NEW: Route to handle adding a new book
+@app.route('/add_book', methods=['POST'])
+def add_book():
+    """Receives new book data, adds it to the store, and returns it."""
+    data = request.get_json()
+    if not data or not data.get('title') or not data.get('author'):
+        return jsonify(success=False, message="Title and Author are required."), 400
+
+    new_book_data = {
+        "id": f"book_{uuid.uuid4().hex}", # Generate a unique ID
+        "title": data.get('title'),
+        "author": data.get('author'),
+        "suggested_by": data.get('suggested_by', 'N/A')
+    }
+
+    # The add_book method handles enrichment and saving
+    new_book = data_store.add_book(new_book_data)
+
+    # We can't directly jsonify the Book object, so we convert it to a dict
+    return jsonify(success=True, book=new_book.__dict__)
 
 @app.route('/export')
 def export_results():

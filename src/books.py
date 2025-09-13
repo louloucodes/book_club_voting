@@ -1,5 +1,6 @@
 import os
 import json
+from .utils import enrich_single_book # NEW: Import the enrichment function
 
 # --- Data Store ---
 # This module acts as a simple in-memory database.
@@ -22,6 +23,7 @@ class Book:
         self.cover_image_url = data.get('cover_image_url')
 
 class BookStore:
+    """A simple class to hold and manage the application's data."""
     def __init__(self):
         self.books = []
         self.votes = {}
@@ -42,6 +44,34 @@ class BookStore:
             print(f"ERROR: {BOOKS_FILE} not found. Please create it.")
             self.books = []
             self.votes = {}
+        except json.JSONDecodeError:
+            print(f"ERROR: Could not decode {BOOKS_FILE}. Check for syntax errors.")
+            self.books = []
+            self.votes = {}
+
+    def add_book(self, new_book_data: dict):
+        """Enriches a new book, adds it to the store, and saves to file."""
+        # 1. Enrich the new book data
+        enriched_data = enrich_single_book(new_book_data)
+
+        # 2. Add to in-memory list as a Book object
+        new_book_obj = Book(enriched_data)
+        self.books.append(new_book_obj)
+        self.votes[new_book_obj.id] = 0
+
+        # 3. Read the current file, append, and write back
+        try:
+            with open(BOOKS_FILE, 'r') as f:
+                all_books_raw = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            all_books_raw = []
+        
+        all_books_raw.append(enriched_data)
+
+        with open(BOOKS_FILE, 'w') as f:
+            json.dump(all_books_raw, f, indent=4)
+        
+        return new_book_obj
 
 # Create a single, shared instance of the store for the entire application
 data_store = BookStore()

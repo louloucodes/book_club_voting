@@ -54,5 +54,19 @@
         "published_date": "1999-11-03",
         "publisher": "HarperCollins Christian Publishing",
         "cover_image_url": "http://books.google.com/books/content?id=ayJpGQeyxgkC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    {
+        "id": "book_f5385d82ffb047d69aa11b3ddb2ad6e9",
+        "title": "The Dispossessed",
+        "author": "Ursula K. Le Guin",
+        "suggested_by": "Test User",
+        "summary": "One of the very best must-read novels of all time - with a new introduction by Roddy Doyle 'A well told tale signifying a good deal; one to be read again and again' THE TIMES 'The book I wish I had written ... It's so far away from my own imagination, I'd love to sit at my desk one day and discover that I could think and write like Ursula Le Guin' Roddy Doyle 'Le Guin is a writer of phenomenal power' OBSERVER 'There was a wall. It did not look important - even a child could climb it. But the idea was real. Like all walls it was ambiguous, two-faced. What was inside it and what was outside it depended upon which side of it you were on...' Shevek is brilliant scientist who is attempting to find a new theory of time - but there are those who are jealous of his work, and will do anything to block him. So he leaves his homeland, hoping to find a place of more liberty and tolerance. Initially feted, Shevek soon finds himself being used as a pawn in a deadly political game. With powerful themes of freedom, society and the natural world's influence on competition and co-operation, THE DISPOSSESSED is a true classic of the 20th century.",
+        "page_count": 373,
+        "categories": [
+            "Fiction"
+        ],
+        "published_date": "2015-09-30",
+        "publisher": "Gateway",
+        "cover_image_url": "http://books.google.com/books/content?id=t9hpEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
     }
 ]

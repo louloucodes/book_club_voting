@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environment
+# Replace 'venv' with the name of your virtual environment folder if different
+venv/
+.venv/
+env/
+.env
+
+# Flask instance folder
+instance/
+
+# IDE / Editor specific
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs
+*.log
