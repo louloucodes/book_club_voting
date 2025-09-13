@@ -14,34 +14,34 @@
         {# This list will be made sortable by SortableJS #}
         <ul id="ranked-choice-list" class="ranked-list">
             {% for book in books %}
-            <li class="book-item" data-id="{{ book.id }}">
-                <span class="drag-handle">&#x2630;</span>
-                <div class="book-cover">
-                    {% if book.cover_image_url %}
-                        <img src="{{ book.cover_image_url }}" alt="Cover of {{ book.title }}">
-                    {% else %}
-                        <div class="cover-placeholder">No Image</div>
+                <li class="book-item" data-id="{{ book.id }}">
+                    <span class="drag-handle">&#x2630;</span>
+                    <div class="book-cover">
+                        {% if book.cover_image_url %}
+                            <img src="{{ book.cover_image_url }}" alt="Cover of {{ book.title }}">
+                        {% else %}
+                            <div class="cover-placeholder">No Image</div>
+                        {% endif %}
+                    </div>
+                    <div class="book-info">
+                        <h2 class="book-title">{{ book.title }}</h2>
+                        <p class="book-author">by {{ book.author }}</p>
+                        <p class="book-publication-date">Published: {{ book.published_date }}</p>
+                    </div>
+                    {% if config.SHOW_SUGGESTER %}
+                    <div class="book-suggester">
+                        <p>Suggested by:</p>
+                        <strong>{{ book.suggested_by }}</strong>
+                    </div>
                     {% endif %}
-                </div>
-                <div class="book-info">
-                    <h2 class="book-title">{{ book.title }}</h2>
-                    <p class="book-author">by {{ book.author }}</p>
-                    <p class="book-publication-date">Published: {{ book.published_date }}</p>
-                </div>
-                {% if config.SHOW_SUGGESTER %}
-                <div class="book-suggester">
-                    <p>Suggested by:</p>
-                    <strong>{{ book.suggested_by }}</strong>
-                </div>
-                {% endif %}
-            </li>
+                </li>
             {% endfor %}
         </ul>
         <div class="controls">
+            <!-- MODIFIED: Changed class to 'submit-button' for green color -->
             <button id="submit-ballot-button" class="submit-button">Submit Ballot</button>
         </div>
         <div id="vote-message" class="form-message"></div>
-
     {% else %} {# Default to plurality voting system #}
         <p class="instructions">
             Welcome! Please vote for the book you would like to read next month.
@@ -87,15 +87,12 @@
     {% endif %}
 
     <div class="controls">
-        <!-- MODIFIED: Added the 'submit-button' class for styling -->
-        <button id="export-button" class="submit-button">Export Results</button>
+        <!-- MODIFIED: Changed class to 'secondary-button' for blue styling -->
+        <button id="export-button" class="secondary-button">Export Results</button>
     </div>
 {% endblock %}
 
 {% block scripts %}
-    {# Conditionally load SortableJS only when needed #}
-    {% if voting_system == 'ranked_choice' %}
-        <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    {% endif %}
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <!-- MODIFIED: Load main.js as a module. It will import SortableJS if needed. -->
+    <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% endblock %}

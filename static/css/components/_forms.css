@@ -41,8 +41,40 @@
     background-color: #218838;
 }
 
+/* MODIFIED: Changed from grey to blue */
+.secondary-button {
+    width: 100%;
+    background-color: #007bff; /* A standard blue color */
+    color: white;
+    border: none;
+    padding: 12px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    transition: background-color 0.2s;
+}
+
+/* MODIFIED: Darker blue for hover state */
+.secondary-button:hover {
+    background-color: #0056b3;
+}
+
+/* NEW: Add styles to control button layout */
+.controls {
+    text-align: center; /* Center the buttons horizontally */
+    padding: 20px 0;
+}
+
+.controls .submit-button,
+.controls .secondary-button {
+    display: inline-block; /* Ensure buttons are not full-width */
+    /* MODIFIED: Set a minimum width for consistent button sizing */
+    min-width: 180px;
+}
+
 .form-message {
-    margin-top: 20px;
+    margin-top: 15px;
+    font-size: 0.9em;
     padding: 15px;
     border-radius: 5px;
     text-align: center;
