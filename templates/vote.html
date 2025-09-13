@@ -9,6 +9,9 @@
 <body>
 
     <div class="container">
+        {% block title %}Vote for a Book{% endblock %}
+
+        {% block content %}
         <h1>Book Club Monthly Vote</h1>
         <p class="instructions">
             Welcome! Please vote for the book you would like to read next month.
@@ -60,8 +63,12 @@
         <div class="controls">
             <button id="export-button">Export Results</button>
         </div>
+        {% endblock %}
+
+        {% block scripts %}
+        <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+        {% endblock %}
     </div>
 
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

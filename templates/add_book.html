@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Add a Book{% endblock %}
+
+{% block content %}
+    <h1>Suggest a New Book</h1>
+    <p class="instructions">
+        Fill out the form below to add a new book to the voting list.
+    </p>
+
+    <form id="add-book-form" class="book-form">
+        <div class="form-group">
+            <label for="title">Book Title</label>
+            <input type="text" id="title" name="title" required>
+        </div>
+        <div class="form-group">
+            <label for="author">Author</label>
+            <input type="text" id="author" name="author" required>
+        </div>
+        <div class="form-group">
+            <label for="suggested_by">Your Name (Suggested by)</label>
+            <input type="text" id="suggested_by" name="suggested_by">
+        </div>
+        <button type="submit" class="submit-button">Add Book</button>
+    </form>
+    <div id="form-message" class="form-message"></div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% endblock %}

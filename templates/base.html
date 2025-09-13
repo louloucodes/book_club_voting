@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- The title will be set by each child page -->
+    <title>{% block title %}Book Club{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{{ url_for('landing') }}" class="nav-brand">Book Club</a>
+        <div class="nav-links">
+            <a href="{{ url_for('vote_page') }}">Vote</a>
+            <a href="{{ url_for('add_book_page') }}">Add a Book</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- The main content from child pages will be injected here -->
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Scripts can also be included in blocks if needed -->
+    {% block scripts %}{% endblock %}
+</body>
+</html>

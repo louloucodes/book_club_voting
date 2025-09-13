@@ -20,10 +20,21 @@ def initialize_data():
 # --- Routes ---
 
 @app.route('/')
-def index():
-    """Renders the main page with the list of books."""
-    # MODIFIED: Access the books list from the data_store.
-    return render_template('index.html', books=data_store.books)
+def landing():
+    """Renders the new landing page."""
+    # We will create landing.html in the next step
+    return render_template('landing.html')
+
+@app.route('/vote')
+def vote_page():
+    """Renders the main page with the list of books for voting."""
+    return render_template('vote.html', books=data_store.books)
+
+@app.route('/add')
+def add_book_page():
+    """Renders the page for adding a new book."""
+    # We will create add_book.html in the next step
+    return render_template('add_book.html')
 
 @app.route('/results')
 def get_results():
