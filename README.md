@@ -4,6 +4,10 @@
 
 This project is a simple, single-page web application designed for a book club to easily vote on their next book. The goal is to provide a straightforward and user-friendly interface that requires no login or complex setup. The application displays a list of suggested books—now with rich details like cover images and summaries—allows members to cast votes, and shows the results in real-time.
 
+<p align="center">
+  <img src="assets/landing_page.png" alt="Screenshot of the Book Club Voting App landing page" width="80%">
+</p>
+
 ## ⭐ Features
 
 *   **Rich Book Display:** Displays a list of books with detailed information including cover image, title, author, summary, page count, and who suggested it.
