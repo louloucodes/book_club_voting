@@ -11,6 +11,9 @@ venv/
 env/
 .env
 
+# NEW: Environment variables file
+.env
+
 # Flask instance folder
 instance/
 

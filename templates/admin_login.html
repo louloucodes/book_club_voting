@@ -8,7 +8,7 @@
         Please enter the admin password to manage the book list.
     </p>
 
-    <form method="POST" action="{{ url_for('admin_login') }}" class="book-form">
+    <form method="POST" action="{{ url_for('admin.login') }}" class="book-form">
         <div class="form-group">
             <label for="password">Password</label>
             <input type="password" id="password" name="password" required>

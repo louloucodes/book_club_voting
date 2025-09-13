@@ -8,14 +8,14 @@
 </head>
 <body>
     <nav class="navbar">
-        <a href="{{ url_for('landing') }}" class="nav-brand">Book Club</a>
+        <a href="{{ url_for('main.landing') }}" class="nav-brand">Book Club</a>
         <div class="nav-links">
-            <a href="{{ url_for('vote_page') }}">Vote</a>
+            <a href="{{ url_for('main.vote_page') }}">Vote</a>
             {% if session.is_admin %}
-                <a href="{{ url_for('admin_page') }}">Admin Panel</a>
-                <a href="{{ url_for('admin_logout') }}">Logout</a>
+                <a href="{{ url_for('admin.panel') }}">Admin Panel</a>
+                <a href="{{ url_for('admin.logout') }}">Logout</a>
             {% else %}
-                <a href="{{ url_for('admin_login') }}">Admin Login</a>
+                <a href="{{ url_for('admin.login') }}">Admin Login</a>
             {% endif %}
         </div>
     </nav>
