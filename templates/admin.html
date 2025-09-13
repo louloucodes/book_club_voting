@@ -27,17 +27,24 @@
 
     <div class="admin-section">
         <h2>Manage Existing Books</h2>
+        <p class="instructions">Drag and drop to reorder the books.</p>
         <ul id="manage-book-list" class="manage-list">
             {% for book in books %}
-            <li class="manage-list-item" id="manage-item-{{ book.id }}">
+            <li class="manage-list-item" data-id="{{ book.id }}" id="manage-item-{{ book.id }}">
+                <span class="drag-handle">&#x2630;</span> <!-- NEW: Drag handle -->
                 <span>{{ book.title }} by {{ book.author }}</span>
                 <button class="delete-button" data-id="{{ book.id }}">&times;</button>
             </li>
             {% endfor %}
         </ul>
+        <!-- NEW: Save Order button -->
+        <button id="save-order-button" class="submit-button" style="display: none; background-color: #007bff;">Save New Order</button>
+        <div id="order-message" class="form-message"></div>
     </div>
 {% endblock %}
 
 {% block scripts %}
+    <!-- NEW: Add SortableJS library from a CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 {% endblock %}

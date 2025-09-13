@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Elements for Admin Page ---
     const addBookForm = document.getElementById('add-book-form');
     const formMessage = document.getElementById('form-message');
-    const manageBookList = document.getElementById('manage-book-list'); // NEW
+    const manageBookList = document.getElementById('manage-book-list');
 
     /**
      * NEW: Creates and returns an HTML list item for the admin management list.
@@ -193,8 +193,54 @@ document.addEventListener('DOMContentLoaded', () => {
     if (addBookForm) {
         addBookForm.addEventListener('submit', handleAddBookSubmit);
     }
-    if (manageBookList) { // NEW
+    if (manageBookList) {
+        // MODIFIED: Define these constants only when we know we're on the admin page.
+        const saveOrderButton = document.getElementById('save-order-button');
+        const orderMessage = document.getElementById('order-message');
+
         manageBookList.addEventListener('click', handleDeleteClick);
+
+        // Initialize SortableJS for drag-and-drop
+        new Sortable(manageBookList, {
+            animation: 150,
+            handle: '.drag-handle', // Use a handle for dragging
+            onUpdate: function () {
+                // Show the save button when the order changes
+                if (saveOrderButton) {
+                    saveOrderButton.style.display = 'block';
+                }
+                if (orderMessage) {
+                    orderMessage.className = 'form-message'; // Hide any previous message
+                }
+            }
+        });
+
+        // MODIFIED: The listener for the save button also needs to be inside this block.
+        if (saveOrderButton) {
+            saveOrderButton.addEventListener('click', async () => {
+                const listItems = manageBookList.querySelectorAll('li');
+                const orderedIds = Array.from(listItems).map(item => item.dataset.id);
+
+                try {
+                    const response = await fetch('/admin/update_order', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ order: orderedIds })
+                    });
+                    const result = await response.json();
+                    if (response.ok) {
+                        orderMessage.textContent = 'Order saved successfully!';
+                        orderMessage.className = 'form-message success';
+                        saveOrderButton.style.display = 'none'; // Hide button after saving
+                    } else {
+                        throw new Error(result.message);
+                    }
+                } catch (error) {
+                    orderMessage.textContent = `Error saving order: ${error.message}`;
+                    orderMessage.className = 'form-message error';
+                }
+            });
+        }
     }
 
 

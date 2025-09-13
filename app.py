@@ -123,6 +123,21 @@ def delete_book(book_id):
         return jsonify(success=True, message="Book deleted successfully.")
     return jsonify(success=False, message="Book not found."), 404
 
+# NEW: Route to handle updating the book order
+@app.route('/admin/update_order', methods=['POST'])
+@admin_required
+def update_book_order():
+    """Updates the order of the books in the data file."""
+    ordered_ids = request.get_json().get('order')
+    if not ordered_ids:
+        return jsonify(success=False, message="Missing order data"), 400
+    
+    success = data_store.update_order(ordered_ids)
+    if success:
+        return jsonify(success=True, message="Book order updated successfully.")
+    return jsonify(success=False, message="Failed to update book order."), 500
+
+
 @app.route('/export')
 def export_results():
     """Exports the current vote counts to a CSV file."""

@@ -235,8 +235,54 @@ h1 {
     color: #004085;
 }
 
+/* NEW: Styles for the admin management list */
+.manage-list {
+    list-style: none;
+    padding: 0;
+}
 
-/* NEW: Styles for the add book form */
+.manage-list-item {
+    background-color: #fff;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    margin-bottom: -1px; /* Creates a "border collapse" effect */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.manage-list-item:first-child {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+.manage-list-item:last-child {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.drag-handle {
+    cursor: grab;
+    color: #aaa;
+    margin-right: 15px;
+}
+
+.delete-button {
+    background: none;
+    border: none;
+    color: #dc3545;
+    font-size: 1.5em;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.delete-button:hover {
+    color: #a71d2a;
+}
+
+
+/* Styles for the add book form */
 .book-form {
     background-color: #fff;
     padding: 30px;

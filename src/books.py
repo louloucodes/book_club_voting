@@ -97,5 +97,30 @@ class BookStore:
             
         return True
 
+    def update_order(self, ordered_ids: list) -> bool:
+        """Reorders the books in memory and in the JSON file."""
+        # Create a dictionary for quick lookups
+        book_map = {book.id: book for book in self.books}
+        
+        # Create the new ordered list of Book objects
+        new_ordered_books = [book_map[id] for id in ordered_ids if id in book_map]
+
+        # If the lengths don't match, something went wrong
+        if len(new_ordered_books) != len(self.books):
+            return False
+
+        # Update the in-memory list
+        self.books = new_ordered_books
+
+        # Create a new list of raw dictionaries to save to the file
+        raw_books_to_save = [book.__dict__ for book in self.books]
+        
+        try:
+            with open(BOOKS_FILE, 'w') as f:
+                json.dump(raw_books_to_save, f, indent=4)
+            return True
+        except IOError:
+            return False
+
 # Create a single, shared instance of the store for the entire application
 data_store = BookStore()
