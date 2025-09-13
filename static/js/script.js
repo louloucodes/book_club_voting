@@ -18,16 +18,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const listItem = document.createElement('li');
         listItem.className = 'manage-list-item';
         listItem.id = `manage-item-${book.id}`;
+        listItem.dataset.id = book.id; // Add the data-id to the li itself
 
-        const span = document.createElement('span');
-        span.textContent = `${book.title} by ${book.author}`;
+        // Create and append the drag handle
+        const dragHandle = document.createElement('span');
+        dragHandle.className = 'drag-handle';
+        dragHandle.innerHTML = '&#x2630;'; // The 'hamburger' menu icon
 
+        // Create and append the title span with the correct class
+        const titleSpan = document.createElement('span');
+        titleSpan.className = 'book-title-text';
+        titleSpan.textContent = `${book.title} by ${book.author}`;
+
+        // Create and append the delete button
         const deleteButton = document.createElement('button');
         deleteButton.className = 'delete-button';
         deleteButton.dataset.id = book.id;
         deleteButton.innerHTML = '&times;'; // The 'x' symbol
 
-        listItem.appendChild(span);
+        listItem.appendChild(dragHandle);
+        listItem.appendChild(titleSpan);
         listItem.appendChild(deleteButton);
 
         return listItem;
@@ -108,7 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
         formMessage.className = 'form-message';
 
         try {
-            const response = await fetch('/add_book', {
+            // MODIFIED: Added the /admin prefix to the URL
+            const response = await fetch('/admin/add_book', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -151,12 +162,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const button = event.target;
         const bookId = button.dataset.id;
         const listItem = document.getElementById(`manage-item-${bookId}`);
-        const bookTitle = listItem.querySelector('span').textContent.trim();
+        // MODIFIED: Use the specific class to get the book title
+        const bookTitle = listItem.querySelector('.book-title-text').textContent.trim();
 
         // Confirm with the user before deleting
         if (confirm(`Are you sure you want to delete "${bookTitle}"?`)) {
             try {
-                const response = await fetch(`/delete_book/${bookId}`, {
+                // MODIFIED: Added the /admin prefix to the URL
+                const response = await fetch(`/admin/delete_book/${bookId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

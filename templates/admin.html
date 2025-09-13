@@ -31,8 +31,9 @@
         <ul id="manage-book-list" class="manage-list">
             {% for book in books %}
             <li class="manage-list-item" data-id="{{ book.id }}" id="manage-item-{{ book.id }}">
-                <span class="drag-handle">&#x2630;</span> <!-- NEW: Drag handle -->
-                <span>{{ book.title }} by {{ book.author }}</span>
+                <span class="drag-handle">&#x2630;</span>
+                <!-- MODIFIED: Added a class to the title span -->
+                <span class="book-title-text">{{ book.title }} by {{ book.author }}</span>
                 <button class="delete-button" data-id="{{ book.id }}">&times;</button>
             </li>
             {% endfor %}

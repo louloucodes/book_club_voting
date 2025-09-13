@@ -4,22 +4,13 @@
 
 This project is a multi-page web application designed for a book club to easily vote on their next book. The application provides a public-facing area for members to view the book list and vote, and a separate, password-protected admin panel for managing the book list. The goal is to provide a straightforward and user-friendly interface with a clear separation between user and administrator capabilities.
 
-<p align="center">
-  <img src="assets/landing_page.png" alt="Screenshot of the Book Club Voting App landing page" width="80%">
-</p>
+## ⭐ Key Features in Action
 
-## ⭐ Features
+The admin panel provides full control over the book list, including adding, deleting, and reordering books via drag-and-drop. The public voting page allows members to easily cast their votes.
 
-*   **Multi-Page Interface:** Separate pages for landing, voting, and administration for a clean user experience.
-*   **Rich Book Display:** Displays a list of books with detailed information including cover image, title, author, and summary.
-*   **Live Voting:** Users can click a "Vote" button next to each book. The vote is registered on the backend without needing a page refresh.
-*   **Real-Time Results:** Vote counts next to each book are updated dynamically as votes are cast.
-*   **Password-Protected Admin Panel:**
-    *   Secure login for administrators.
-    *   Add new books to the list via a simple form.
-    *   Delete existing books.
-    *   Reorder the book list for the voting page using an intuitive drag-and-drop interface.
-*   **Export to CSV:** A simple "Export Results" button allows users to download the current vote counts as a `.csv` file.
+| Admin Panel (Add, Delete, Reorder)            | Public Voting Page                        |
+| --------------------------------------------- | ----------------------------------------- |
+| <img src="assets/admin_screen_recording.gif" alt="Admin panel demo showing adding, deleting, and reordering books" width="400"> | <img src="assets/voting_page.png" alt="Public voting page with book list" width="400"> |
 
 ## 🏗️ Software Architecture
 
