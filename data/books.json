@@ -1,0 +1,26 @@
+[
+    {
+        "id": "book_1",
+        "title": "Frankenstein",
+        "author": "Mary Shelley",
+        "suggested_by": "Alice"
+    },
+    {
+        "id": "book_2",
+        "title": "Kindred",
+        "author": "Octavia E. Butler",
+        "suggested_by": "Bob"
+    },
+    {
+        "id": "book_3",
+        "title": "Circe",
+        "author": "Madeline Miller",
+        "suggested_by": "Charlie"
+    },
+    {
+        "id": "book_4",
+        "title": "To Kill a Mockingbird",
+        "author": "Harper Lee",
+        "suggested_by": "Dana"
+    }
+]

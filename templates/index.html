@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Club Voting</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Book Club Monthly Vote</h1>
+        <p class="instructions">
+            Welcome! Please vote for the book you would like to read next month.
+        </p>
+
+        <div id="book-list">
+            {% for book in books %}
+            <div class="book-item" id="book-item-{{ book.id }}">
+                <div class="book-info">
+                    <h2 class="book-title">{{ book.title }}</h2>
+                    <p class="book-author">by {{ book.author }}</p>
+                    <p class="book-suggester">Suggested by: {{ book.suggested_by }}</p>
+                </div>
+                <div class="vote-section">
+                    <button class="vote-button" data-id="{{ book.id }}">Vote</button>
+                    <span class="vote-count" id="votes-{{ book.id }}">0 votes</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="controls">
+            <button id="export-button">Export Results</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
