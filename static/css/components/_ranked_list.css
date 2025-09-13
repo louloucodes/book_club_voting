@@ -4,6 +4,8 @@
     list-style: none;
     padding: 0;
     margin-bottom: 2em;
+    /* Initialize a CSS counter named 'rank'. */
+    counter-reset: rank;
 }
 
 /* Use Flexbox on the list item to align the handle and content */
@@ -16,6 +18,9 @@
     margin-bottom: 10px;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+
+    position: relative;
+    padding-left: 65px; /* Make space for the rank number */
 }
 
 /* Style the drag handle */
@@ -35,4 +40,31 @@
     flex-grow: 1;
     display: flex;
     align-items: center;
+}
+
+/* Create and style the rank number using a pseudo-element. */
+.ranked-list .book-item::before {
+    /* Increment the counter for each list item. */
+    counter-increment: rank;
+    /* Display the value of the counter. */
+    content: counter(rank);
+
+    /* --- Styling for the number circle --- */
+    position: absolute;
+    left: 10px; /* Position it in the padding space */
+    top: 50%;
+    transform: translateY(-50%); /* Vertically center it */
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    width: 40px;
+    height: 40px;
+    
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #007bff; /* A nice blue to draw attention */
+    background-color: #e9f5ff; /* A very light blue background */
+    border-radius: 50%; /* Make it a circle */
 }

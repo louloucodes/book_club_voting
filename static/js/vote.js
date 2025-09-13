@@ -19,65 +19,163 @@ async function updateVoteCounts() {
 }
 
 /**
- * Handles a click on a plurality vote button.
+ * A global variable to hold the confirmation callback function.
  */
-async function handleVoteClick(event) {
-    if (!event.target.classList.contains('vote-button')) {
-        return;
-    }
+let onConfirmCallback = null;
 
-    const button = event.target;
-    const bookId = button.dataset.id;
+/**
+ * Shows the confirmation modal with dynamic content.
+ * @param {string} title - The title for the modal.
+ * @param {string} bodyHtml - The HTML content for the modal body.
+ * @param {function} onConfirm - The function to execute when the confirm button is clicked.
+ */
+function showConfirmationModal(title, bodyHtml, onConfirm) {
+    const modal = document.getElementById('confirmation-modal');
+    document.getElementById('modal-title').textContent = title;
+    document.getElementById('modal-body').innerHTML = bodyHtml;
+    
+    onConfirmCallback = onConfirm; // Store the callback
 
-    try {
-        const response = await fetch(`/vote/${bookId}`, { method: 'POST' });
-        if (response.ok) {
-            console.log(`Voted for ${bookId}`);
-            updateVoteCounts();
-        } else {
-            console.error('Failed to submit vote.');
-        }
-    } catch (error) {
-        console.error('Error submitting vote:', error);
-    }
+    modal.style.display = 'flex';
 }
 
 /**
- * Handles the submission of a ranked-choice ballot.
+ * Hides the confirmation modal.
+ */
+function hideModal() {
+    const modal = document.getElementById('confirmation-modal');
+    modal.style.display = 'none';
+    onConfirmCallback = null; // Clear the callback
+}
+
+/**
+ * Handles a click on a plurality vote button by showing a confirmation modal.
+ */
+async function handleVoteClick(event) {
+    if (!event.target.classList.contains('vote-button')) return;
+
+    const button = event.target;
+    const bookId = button.dataset.id;
+    const bookItem = document.getElementById(`book-item-${bookId}`);
+    const bookTitle = bookItem.querySelector('.book-title').textContent;
+
+    const bodyHtml = `<p>Are you sure you want to vote for:</p><p><strong>${bookTitle}</strong></p>`;
+
+    // Show the modal and pass the actual vote-casting logic as the callback
+    showConfirmationModal('Confirm Your Vote', bodyHtml, async () => {
+        try {
+            const response = await fetch(`/vote/${bookId}`, { method: 'POST' });
+            if (response.ok) {
+                console.log(`Voted for ${bookId}`);
+                updateVoteCounts();
+                hideModal();
+            } else {
+                console.error('Failed to submit vote.');
+                alert('Failed to submit vote.');
+            }
+        } catch (error) {
+            console.error('Error submitting vote:', error);
+        }
+    });
+}
+
+/**
+ * Handles the submission of a ranked-choice ballot by showing a confirmation modal.
  */
 async function handleBallotSubmit() {
     const rankedChoiceList = document.getElementById('ranked-choice-list');
-    const submitBallotButton = document.getElementById('submit-ballot-button');
     const rankedItems = rankedChoiceList.querySelectorAll('li');
-    const ballot = Array.from(rankedItems).map(item => item.dataset.id);
+    
+    // Build an ordered list for the modal body
+    let bodyHtml = '<p>You have ranked the books as follows:</p><ol>';
+    const ballot = [];
+    rankedItems.forEach(item => {
+        const title = item.querySelector('.book-title').textContent;
+        bodyHtml += `<li>${title}</li>`;
+        ballot.push(item.dataset.id);
+    });
+    bodyHtml += '</ol>';
 
-    const voteMessage = document.getElementById('vote-message');
-    voteMessage.textContent = '';
-    voteMessage.className = 'form-message';
+    // Show the modal and pass the actual ballot submission logic as the callback
+    showConfirmationModal('Confirm Your Ballot', bodyHtml, async () => {
+        const submitBallotButton = document.getElementById('submit-ballot-button');
+        const voteMessage = document.getElementById('vote-message');
+        voteMessage.textContent = '';
+        voteMessage.className = 'form-message';
 
-    try {
-        const response = await fetch('/vote', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ballot: ballot })
-        });
+        try {
+            const response = await fetch('/vote', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ballot: ballot })
+            });
+            const result = await response.json();
 
-        const result = await response.json();
+            if (response.ok) {
+                // --- MODIFIED: Offer a download link upon success ---
 
-        if (response.ok) {
-            voteMessage.textContent = 'Your ballot has been submitted successfully!';
-            voteMessage.classList.add('success');
-            submitBallotButton.disabled = true;
-            submitBallotButton.style.backgroundColor = '#ccc';
-        } else {
-            voteMessage.textContent = `Error: ${result.message || 'Could not submit ballot.'}`;
+                // 1. Prepare the text content for the file.
+                let fileContent = "My Book Club Ballot\n";
+                fileContent += "=====================\n\n";
+                const rankedItems = document.querySelectorAll('#ranked-choice-list li');
+                rankedItems.forEach((item, index) => {
+                    const title = item.querySelector('.book-title').textContent;
+                    fileContent += `${index + 1}. ${title}\n`;
+                });
+                fileContent += `\nVote submitted on: ${new Date().toLocaleString()}`;
+
+                // 2. Create the download link.
+                const downloadLink = document.createElement('a');
+                downloadLink.href = '#';
+                downloadLink.textContent = 'Download a copy of your vote.';
+                downloadLink.style.display = 'block';
+                downloadLink.style.marginTop = '10px';
+                downloadLink.onclick = (e) => {
+                    e.preventDefault();
+                    generateTextFileDownload(fileContent, 'my_vote.txt');
+                };
+
+                // 3. Display the success message and the new link.
+                voteMessage.textContent = 'Your ballot has been submitted successfully!';
+                voteMessage.classList.add('success');
+                voteMessage.appendChild(downloadLink); // Add the link to the message area
+
+                submitBallotButton.disabled = true;
+                submitBallotButton.style.backgroundColor = '#ccc';
+                hideModal();
+            } else {
+                throw new Error(result.message || 'Could not submit ballot.');
+            }
+        } catch (error) {
+            console.error('Ballot submission error:', error);
+            voteMessage.textContent = `Error: ${error.message}`;
             voteMessage.classList.add('error');
+            hideModal();
         }
-    } catch (error) {
-        console.error('Ballot submission error:', error);
-        voteMessage.textContent = 'A network error occurred. Please try again.';
-        voteMessage.classList.add('error');
-    }
+    });
+}
+
+/**
+ * Creates a downloadable text file from a string of content.
+ * @param {string} textContent - The content to be put in the text file.
+ * @param {string} fileName - The name of the file to be downloaded (e.g., "my_vote.txt").
+ */
+function generateTextFileDownload(textContent, fileName) {
+    // Create a Blob (a file-like object) from the text content.
+    const blob = new Blob([textContent], { type: 'text/plain' });
+
+    // Create a temporary link element.
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = fileName;
+
+    // Programmatically click the link to trigger the download.
+    document.body.appendChild(link);
+    link.click();
+
+    // Clean up by removing the link and revoking the object URL.
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
 }
 
 /**
@@ -110,6 +208,24 @@ export function initVotePage() {
     if (exportButton) {
         exportButton.addEventListener('click', () => {
             window.location.href = '/export';
+        });
+    }
+
+    // NEW: Add event listeners for the modal buttons
+    const modal = document.getElementById('confirmation-modal');
+    if (modal) {
+        document.getElementById('modal-close-button').addEventListener('click', hideModal);
+        document.getElementById('modal-cancel-button').addEventListener('click', hideModal);
+        document.getElementById('modal-confirm-button').addEventListener('click', () => {
+            if (typeof onConfirmCallback === 'function') {
+                onConfirmCallback();
+            }
+        });
+        // Also allow closing by clicking the overlay
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                hideModal();
+            }
         });
     }
 }
