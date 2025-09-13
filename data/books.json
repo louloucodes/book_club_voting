@@ -1,5 +1,15 @@
 [
     {
+        "id": "book_4fcd24c064934ec88bd49611b9f68d88",
+        "title": "Someone Else's Shoes",
+        "author": "Jojo Moyes",
+        "suggested_by": "Greta",
+        "summary": "INSTANT NEW YORK TIMES BESTSELLER! \u201cVery few authors have the power to make you laugh on one page and cry on the next. Moyes is one of them.\u201d \u2014The New York Times A story of mix-ups, mess-ups and making the most of second chances, this is the new novel from #1 New York Times bestselling author Jojo Moyes, author of Me Before You and The Giver of Stars Who are you when you are forced to walk in someone else\u2019s shoes? Nisha Cantor lives the globetrotting life of the seriously wealthy, until her husband announces a divorce and cuts her off. Nisha is determined to hang onto her glamorous life. But in the meantime, she must scramble to cope--she doesn\u2019t even have the shoes she was, until a moment ago, standing in. That\u2019s because Sam Kemp \u2013 in the bleakest point of her life \u2013 has accidentally taken Nisha\u2019s gym bag. But Sam hardly has time to worry about a lost gym bag--she\u2019s struggling to keep herself and her family afloat. When she tries on Nisha\u2019s six-inch high Christian Louboutin red crocodile shoes, the resulting jolt of confidence that makes her realize something must change\u2014and that thing is herself. Full of Jojo Moyes\u2019 signature humor, brilliant storytelling, and warmth, Someone Else\u2019s Shoes is a story about how just one little thing can suddenly change everything.",
+        "page_count": 465,
+        "published_date": "2024-02-13",
+        "cover_image_url": "http://books.google.com/books/content?id=QgviEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    {
         "id": "book_639dc40ae7134e16a54343d97937868a",
         "title": "Bel Canto",
         "author": "Ann Patchett",
@@ -38,15 +48,5 @@
         "page_count": 0,
         "published_date": "2022-10-18",
         "cover_image_url": "http://books.google.com/books/content?id=9k2JzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
-    },
-    {
-        "id": "book_4fcd24c064934ec88bd49611b9f68d88",
-        "title": "Someone Else's Shoes",
-        "author": "Jojo Moyes",
-        "suggested_by": "Greta",
-        "summary": "INSTANT NEW YORK TIMES BESTSELLER! \u201cVery few authors have the power to make you laugh on one page and cry on the next. Moyes is one of them.\u201d \u2014The New York Times A story of mix-ups, mess-ups and making the most of second chances, this is the new novel from #1 New York Times bestselling author Jojo Moyes, author of Me Before You and The Giver of Stars Who are you when you are forced to walk in someone else\u2019s shoes? Nisha Cantor lives the globetrotting life of the seriously wealthy, until her husband announces a divorce and cuts her off. Nisha is determined to hang onto her glamorous life. But in the meantime, she must scramble to cope--she doesn\u2019t even have the shoes she was, until a moment ago, standing in. That\u2019s because Sam Kemp \u2013 in the bleakest point of her life \u2013 has accidentally taken Nisha\u2019s gym bag. But Sam hardly has time to worry about a lost gym bag--she\u2019s struggling to keep herself and her family afloat. When she tries on Nisha\u2019s six-inch high Christian Louboutin red crocodile shoes, the resulting jolt of confidence that makes her realize something must change\u2014and that thing is herself. Full of Jojo Moyes\u2019 signature humor, brilliant storytelling, and warmth, Someone Else\u2019s Shoes is a story about how just one little thing can suddenly change everything.",
-        "page_count": 465,
-        "published_date": "2024-02-13",
-        "cover_image_url": "http://books.google.com/books/content?id=QgviEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
     }
 ]
