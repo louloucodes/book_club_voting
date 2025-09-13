@@ -1,5 +1,13 @@
 @import url('base.css');
+
+/* MODIFIED: All component stylesheets are now in the 'components/' subfolder */
 @import url('components/_navbar.css');
-@import url('components/_book-item.css');
 @import url('components/_forms.css');
 @import url('components/_admin.css');
+@import url('components/_book_item.css');
+@import url('components/_ranked_list.css');
+
+/* 
+  This file acts as the main entry point for all CSS.
+  It imports all other stylesheets.
+*/

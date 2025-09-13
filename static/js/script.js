@@ -1,157 +1,151 @@
 document.addEventListener('DOMContentLoaded', () => {
-
-    // --- Elements for Voting Page ---
-    const bookList = document.getElementById('book-list');
-    const exportButton = document.getElementById('export-button');
-
-    // --- Elements for Admin Page ---
-    const addBookForm = document.getElementById('add-book-form');
-    const formMessage = document.getElementById('form-message');
+    // --- Admin Panel Logic ---
+    const adminForm = document.getElementById('add-book-form');
     const manageBookList = document.getElementById('manage-book-list');
+    const saveOrderButton = document.getElementById('save-order-button');
 
-    /**
-     * NEW: Creates and returns an HTML list item for the admin management list.
-     * @param {object} book - The book object returned from the API.
-     * @returns {HTMLLIElement} A new <li> element.
-     */
-    function createManageListItem(book) {
-        const listItem = document.createElement('li');
-        listItem.className = 'manage-list-item';
-        listItem.id = `manage-item-${book.id}`;
-        listItem.dataset.id = book.id; // Add the data-id to the li itself
+    // --- Plurality Voting Logic ---
+    const bookList = document.getElementById('book-list');
 
-        // Create and append the drag handle
-        const dragHandle = document.createElement('span');
-        dragHandle.className = 'drag-handle';
-        dragHandle.innerHTML = '&#x2630;'; // The 'hamburger' menu icon
+    // --- Ranked Choice Voting Logic ---
+    const rankedChoiceList = document.getElementById('ranked-choice-list');
+    const submitBallotButton = document.getElementById('submit-ballot-button');
 
-        // Create and append the title span with the correct class
-        const titleSpan = document.createElement('span');
-        titleSpan.className = 'book-title-text';
-        titleSpan.textContent = `${book.title} by ${book.author}`;
-
-        // Create and append the delete button
-        const deleteButton = document.createElement('button');
-        deleteButton.className = 'delete-button';
-        deleteButton.dataset.id = book.id;
-        deleteButton.innerHTML = '&times;'; // The 'x' symbol
-
-        listItem.appendChild(dragHandle);
-        listItem.appendChild(titleSpan);
-        listItem.appendChild(deleteButton);
-
-        return listItem;
-    }
+    // --- Shared Logic ---
+    const exportButton = document.getElementById('export-button');
 
     /**
      * Fetches the latest vote counts from the server and updates the UI.
+     * This is specific to the plurality voting system.
      */
     async function updateVoteCounts() {
         try {
             const response = await fetch('/results');
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const votes = await response.json();
+            if (!response.ok) throw new Error('Failed to fetch results');
             
-            // Update the vote count for each book on the page
-            for (const bookId in votes) {
-                const countElement = document.getElementById(`votes-${bookId}`);
-                if (countElement) {
-                    const count = votes[bookId];
-                    countElement.textContent = `${count} vote${count === 1 ? '' : 's'}`;
-                }
-            }
+            const results = await response.json();
+            
+            document.querySelectorAll('.vote-count').forEach(span => {
+                const bookId = span.id.split('-')[1];
+                span.textContent = `${results[bookId] || 0} votes`;
+            });
         } catch (error) {
-            console.error('Failed to fetch vote counts:', error);
+            console.error('Error updating vote counts:', error);
         }
     }
 
     /**
-     * Handles clicks within the book list, specifically on vote buttons.
+     * Handles a click on a plurality vote button.
      */
     async function handleVoteClick(event) {
-        // Check if a vote button was clicked
-        if (event.target.classList.contains('vote-button')) {
-            const bookId = event.target.dataset.id;
-            
-            try {
-                const response = await fetch(`/vote/${bookId}`, {
-                    method: 'POST',
-                });
+        if (!event.target.classList.contains('vote-button')) {
+            return;
+        }
 
-                if (response.ok) {
-                    // If the vote was successful, update the counts on the page
-                    await updateVoteCounts();
-                } else {
-                    console.error('Failed to submit vote.');
-                }
-            } catch (error) {
-                console.error('Error submitting vote:', error);
+        const button = event.target;
+        const bookId = button.dataset.id;
+
+        try {
+            const response = await fetch(`/vote/${bookId}`, {
+                method: 'POST',
+            });
+
+            if (response.ok) {
+                console.log(`Voted for ${bookId}`);
+                updateVoteCounts(); // Refresh counts after voting
+            } else {
+                console.error('Failed to submit vote.');
             }
+        } catch (error) {
+            console.error('Error submitting vote:', error);
         }
     }
 
     /**
-     * Handles the click on the export button.
+     * Handles the submission of a ranked-choice ballot.
      */
-    function handleExportClick() {
-        // Redirect the browser to the export URL to trigger the download
-        window.location.href = '/export';
-    }
+    async function handleBallotSubmit() {
+        const rankedItems = rankedChoiceList.querySelectorAll('li');
+        const ballot = Array.from(rankedItems).map(item => item.dataset.id);
 
-    /**
-     * NEW: Handles the submission of the 'Add a Book' form.
-     */
-    async function handleAddBookSubmit(event) {
-        event.preventDefault(); // Prevent the default page reload
-
-        const formData = new FormData(addBookForm);
-        const bookData = {
-            title: formData.get('title'),
-            author: formData.get('author'),
-            suggested_by: formData.get('suggested_by')
-        };
-
-        // Clear previous messages
-        formMessage.textContent = '';
-        formMessage.className = 'form-message';
+        const voteMessage = document.getElementById('vote-message');
+        voteMessage.textContent = '';
+        voteMessage.className = 'form-message';
 
         try {
-            // MODIFIED: Added the /admin prefix to the URL
-            const response = await fetch('/admin/add_book', {
+            const response = await fetch('/vote', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(bookData),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ballot: ballot })
             });
 
             const result = await response.json();
 
             if (response.ok) {
-                // MODIFIED: Instead of just showing a message, dynamically update the list.
-                formMessage.textContent = `Success! "${result.book.title}" has been added.`;
+                voteMessage.textContent = 'Your ballot has been submitted successfully!';
+                voteMessage.classList.add('success');
+                submitBallotButton.disabled = true; // Prevent re-voting
+                submitBallotButton.style.backgroundColor = '#ccc';
+            } else {
+                voteMessage.textContent = `Error: ${result.message || 'Could not submit ballot.'}`;
+                voteMessage.classList.add('error');
+            }
+        } catch (error) {
+            console.error('Ballot submission error:', error);
+            voteMessage.textContent = 'A network error occurred. Please try again.';
+            voteMessage.classList.add('error');
+        }
+    }
+
+    /**
+     * Handles the submission of the "Add Book" form.
+     */
+    async function handleAddBookSubmit(event) {
+        event.preventDefault();
+        const form = event.target;
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        
+        // MODIFIED: Removed publication_date from the data sent to the server.
+        const bookData = {
+            title: data.title,
+            author: data.author,
+            suggested_by: data.suggested_by
+        };
+
+        const formMessage = document.getElementById('form-message');
+        formMessage.textContent = '';
+        formMessage.className = 'form-message';
+
+        try {
+            const response = await fetch('/admin/add_book', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(bookData)
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                formMessage.textContent = 'Book added successfully!';
                 formMessage.classList.add('success');
-                addBookForm.reset(); // Clear the form fields
-
-                // Create the new list item and append it to the management list
+                form.reset();
+                // Add the new book to the list dynamically
                 const newListItem = createManageListItem(result.book);
-                manageBookList.appendChild(newListItem);
-
+                document.getElementById('manage-book-list').appendChild(newListItem);
             } else {
                 formMessage.textContent = `Error: ${result.message || 'Could not add book.'}`;
                 formMessage.classList.add('error');
             }
         } catch (error) {
-            console.error('Form submission error:', error);
+            console.error('Add book error:', error);
             formMessage.textContent = 'A network error occurred. Please try again.';
             formMessage.classList.add('error');
         }
     }
 
     /**
-     * NEW: Handles clicks on the delete buttons in the admin panel.
+     * Handles clicks on the delete buttons in the admin panel.
      */
     async function handleDeleteClick(event) {
         // Use event delegation to catch clicks on delete buttons
@@ -191,75 +185,115 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    /**
+     * Saves the new order of books in the admin panel.
+     */
+    async function handleSaveOrder() {
+        const listItems = manageBookList.querySelectorAll('li');
+        const orderedIds = Array.from(listItems).map(item => item.dataset.id);
 
-    // --- Attach Event Listeners ---
-
-    // Listeners for the Voting Page
-    if (bookList) {
-        bookList.addEventListener('click', handleVoteClick);
-    }
-    if (exportButton) {
-        exportButton.addEventListener('click', handleExportClick);
-    }
-
-    // Listeners for the Admin Page
-    if (addBookForm) {
-        addBookForm.addEventListener('submit', handleAddBookSubmit);
-    }
-    if (manageBookList) {
-        // MODIFIED: Define these constants only when we know we're on the admin page.
-        const saveOrderButton = document.getElementById('save-order-button');
         const orderMessage = document.getElementById('order-message');
+        orderMessage.textContent = '';
+        orderMessage.className = 'form-message';
 
-        manageBookList.addEventListener('click', handleDeleteClick);
-
-        // Initialize SortableJS for drag-and-drop
-        new Sortable(manageBookList, {
-            animation: 150,
-            handle: '.drag-handle', // Use a handle for dragging
-            onUpdate: function () {
-                // Show the save button when the order changes
-                if (saveOrderButton) {
-                    saveOrderButton.style.display = 'block';
-                }
-                if (orderMessage) {
-                    orderMessage.className = 'form-message'; // Hide any previous message
-                }
-            }
-        });
-
-        // MODIFIED: The listener for the save button also needs to be inside this block.
-        if (saveOrderButton) {
-            saveOrderButton.addEventListener('click', async () => {
-                const listItems = manageBookList.querySelectorAll('li');
-                const orderedIds = Array.from(listItems).map(item => item.dataset.id);
-
-                try {
-                    const response = await fetch('/admin/update_order', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ order: orderedIds })
-                    });
-                    const result = await response.json();
-                    if (response.ok) {
-                        orderMessage.textContent = 'Order saved successfully!';
-                        orderMessage.className = 'form-message success';
-                        saveOrderButton.style.display = 'none'; // Hide button after saving
-                    } else {
-                        throw new Error(result.message);
-                    }
-                } catch (error) {
-                    orderMessage.textContent = `Error saving order: ${error.message}`;
-                    orderMessage.className = 'form-message error';
-                }
+        try {
+            const response = await fetch('/admin/update_order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ order: orderedIds })
             });
+            const result = await response.json();
+            if (response.ok) {
+                orderMessage.textContent = 'Order saved successfully!';
+                orderMessage.className = 'form-message success';
+                saveOrderButton.style.display = 'none'; // Hide button after saving
+            } else {
+                throw new Error(result.message);
+            }
+        } catch (error) {
+            orderMessage.textContent = `Error saving order: ${error.message}`;
+            orderMessage.className = 'form-message error';
         }
     }
 
+    /**
+     * Creates and returns an HTML list item for the admin management list.
+     */
+    function createManageListItem(book) {
+        const listItem = document.createElement('li');
+        listItem.className = 'book-item';
+        listItem.dataset.id = book.id;
+        listItem.id = `manage-item-${book.id}`;
 
-    // --- Initial Load ---
-    // Fetch and display the initial vote counts only on the vote page
+        // This is a simplified version. A more robust solution might use a <template> element.
+        // Note: This assumes the config.SHOW_SUGGESTER is true. The dynamic part is tricky without another server call.
+        listItem.innerHTML = `
+            <span class="drag-handle">&#x2630;</span>
+            <div class="book-cover">
+                ${book.cover_image_url 
+                    ? `<img src="${book.cover_image_url}" alt="Cover of ${book.title}">` 
+                    : `<div class="cover-placeholder">No Image</div>`
+                }
+            </div>
+            <div class="book-info">
+                <h2 class="book-title">${book.title}</h2>
+                <p class="book-author">by ${book.author}</p>
+                <!-- MODIFIED: Use 'published_date' to match the JSON from the server -->
+                <p class="book-publication-date">Published: ${book.published_date || 'N/A'}</p>
+            </div>
+            <div class="book-suggester">
+                <p>Suggested by:</p>
+                <strong>${book.suggested_by || 'N/A'}</strong>
+            </div>
+            <button class="delete-button" data-id="${book.id}">&times;</button>
+        `;
+        return listItem;
+    }
+
+
+    // --- Initialization ---
+
+    // Initialize plurality voting logic if its elements exist
     if (bookList) {
-        updateVoteCounts();
+        bookList.addEventListener('click', handleVoteClick);
+        updateVoteCounts(); // Initial load of vote counts
+        // Optional: Periodically refresh vote counts
+        // setInterval(updateVoteCounts, 5000); 
+    }
+
+    // Initialize ranked-choice voting logic if its elements exist
+    if (rankedChoiceList) {
+        new Sortable(rankedChoiceList, {
+            animation: 150,
+            handle: '.drag-handle',
+        });
+
+        submitBallotButton.addEventListener('click', handleBallotSubmit);
+    }
+
+    // Initialize admin panel logic if its elements exist
+    if (adminForm) {
+        adminForm.addEventListener('submit', handleAddBookSubmit);
+    }
+    if (manageBookList) {
+        manageBookList.addEventListener('click', handleDeleteClick);
+        
+        new Sortable(manageBookList, {
+            animation: 150,
+            handle: '.drag-handle',
+            onUpdate: () => {
+                saveOrderButton.style.display = 'inline-block';
+            }
+        });
+    }
+    if (saveOrderButton) {
+        saveOrderButton.addEventListener('click', handleSaveOrder);
+    }
+
+    // Initialize shared logic
+    if (exportButton) {
+        exportButton.addEventListener('click', () => {
+            window.location.href = '/export';
+        });
     }
 });

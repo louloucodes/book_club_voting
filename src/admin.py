@@ -3,7 +3,6 @@ from functools import wraps
 from flask import (
     Blueprint, render_template, request, session, redirect, url_for, flash, jsonify, current_app
 )
-from .books import data_store
 
 # --- Blueprint Setup ---
 # The first argument is the blueprint's name.
@@ -46,8 +45,9 @@ def logout():
 @admin_required
 def panel():
     """Renders the admin panel for managing books."""
-    data_store.load_books()
-    return render_template('admin.html', books=data_store.books)
+    # MODIFIED: Access data_store from current_app
+    current_app.data_store.load_books()
+    return render_template('admin.html', books=current_app.data_store.books)
 
 @admin_bp.route('/add_book', methods=['POST'])
 @admin_required
@@ -62,13 +62,15 @@ def add_book():
         "author": data.get('author'),
         "suggested_by": data.get('suggested_by', 'N/A')
     }
-    new_book = data_store.add_book(new_book_data)
+    # MODIFIED: Access data_store from current_app
+    new_book = current_app.data_store.add_book(new_book_data)
     return jsonify(success=True, book=new_book.__dict__)
 
 @admin_bp.route('/delete_book/<string:book_id>', methods=['POST'])
 @admin_required
 def delete_book(book_id):
-    success = data_store.delete_book(book_id)
+    # MODIFIED: Access data_store from current_app
+    success = current_app.data_store.delete_book(book_id)
     if success:
         return jsonify(success=True, message="Book deleted successfully.")
     return jsonify(success=False, message="Book not found."), 404
@@ -80,7 +82,8 @@ def update_order():
     if not ordered_ids:
         return jsonify(success=False, message="Missing order data"), 400
     
-    success = data_store.update_order(ordered_ids)
+    # MODIFIED: Access data_store from current_app
+    success = current_app.data_store.update_order(ordered_ids)
     if success:
         return jsonify(success=True, message="Book order updated successfully.")
     return jsonify(success=False, message="Failed to update book order."), 500

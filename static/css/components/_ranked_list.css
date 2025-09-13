@@ -1,0 +1,38 @@
+/* Styles for the Ranked Choice Voting List */
+
+.ranked-list {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 2em;
+}
+
+/* Use Flexbox on the list item to align the handle and content */
+.ranked-list .book-item {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Style the drag handle */
+.ranked-list .drag-handle {
+    font-size: 1.5em;
+    color: #aaa;
+    cursor: grab;
+    margin-right: 20px; /* Add space between handle and content */
+}
+
+.ranked-list .drag-handle:active {
+    cursor: grabbing;
+}
+
+/* Ensure the main content block fills the remaining space */
+.ranked-list .book-main-content {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}

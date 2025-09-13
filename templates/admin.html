@@ -28,24 +28,40 @@
     <div class="admin-section">
         <h2>Manage Existing Books</h2>
         <p class="instructions">Drag and drop to reorder the books.</p>
-        <ul id="manage-book-list" class="manage-list">
+        <!-- MODIFIED: The list now uses the .book-item structure -->
+        <ul id="manage-book-list">
             {% for book in books %}
-            <li class="manage-list-item" data-id="{{ book.id }}" id="manage-item-{{ book.id }}">
+            <li class="book-item" data-id="{{ book.id }}" id="manage-item-{{ book.id }}">
                 <span class="drag-handle">&#x2630;</span>
-                <!-- MODIFIED: Added a class to the title span -->
-                <span class="book-title-text">{{ book.title }} by {{ book.author }}</span>
+                <div class="book-cover">
+                    {% if book.cover_image_url %}
+                        <img src="{{ book.cover_image_url }}" alt="Cover of {{ book.title }}">
+                    {% else %}
+                        <div class="cover-placeholder">No Image</div>
+                    {% endif %}
+                </div>
+                <div class="book-info">
+                    <h2 class="book-title">{{ book.title }}</h2>
+                    <p class="book-author">by {{ book.author }}</p>
+                    <!-- MODIFIED: Use 'published_date' to match the Book object -->
+                    <p class="book-publication-date">Published: {{ book.published_date }}</p>
+                </div>
+                {% if config.SHOW_SUGGESTER %}
+                <div class="book-suggester">
+                    <p>Suggested by:</p>
+                    <strong>{{ book.suggested_by }}</strong>
+                </div>
+                {% endif %}
                 <button class="delete-button" data-id="{{ book.id }}">&times;</button>
             </li>
             {% endfor %}
         </ul>
-        <!-- NEW: Save Order button -->
-        <button id="save-order-button" class="submit-button" style="display: none; background-color: #007bff;">Save New Order</button>
+        <button id="save-order-button" class="submit-button" style="display: none;">Save New Order</button>
         <div id="order-message" class="form-message"></div>
     </div>
 {% endblock %}
 
 {% block scripts %}
-    <!-- NEW: Add SortableJS library from a CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 {% endblock %}

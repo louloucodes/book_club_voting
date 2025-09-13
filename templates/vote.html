@@ -4,14 +4,18 @@
 
 {% block content %}
     <h1>Book Club Monthly Vote</h1>
-    <p class="instructions">
-        Welcome! Please vote for the book you would like to read next month.
-    </p>
 
-    <div id="book-list">
-        {% for book in books %}
-        <div class="book-item" id="book-item-{{ book.id }}">
-            <div class="book-main-content">
+    {# Check which voting system is active and render the appropriate UI #}
+    {% if voting_system == 'ranked_choice' %}
+        <p class="instructions">
+            Rank the books by dragging and dropping them into your preferred order. Your first choice should be at the top.
+        </p>
+        
+        {# This list will be made sortable by SortableJS #}
+        <ul id="ranked-choice-list" class="ranked-list">
+            {% for book in books %}
+            <li class="book-item" data-id="{{ book.id }}">
+                <span class="drag-handle">&#x2630;</span>
                 <div class="book-cover">
                     {% if book.cover_image_url %}
                         <img src="{{ book.cover_image_url }}" alt="Cover of {{ book.title }}">
@@ -19,43 +23,79 @@
                         <div class="cover-placeholder">No Image</div>
                     {% endif %}
                 </div>
-                <div class="book-details">
-                    <div class="book-info">
-                        <h2 class="book-title">{{ book.title }}</h2>
-                        <p class="book-author">by {{ book.author }}</p>
-                        <p class="book-suggester">Suggested by: {{ book.suggested_by }}</p>
-                        <p class="book-meta">
-                            {% if book.page_count %}
-                                <span>{{ book.page_count }} pages</span>
-                            {% endif %}
-                            {% if book.published_date %}
-                                <span>&bull; Published: {{ book.published_date }}</span>
-                            {% endif %}
-                        </p>
+                <div class="book-info">
+                    <h2 class="book-title">{{ book.title }}</h2>
+                    <p class="book-author">by {{ book.author }}</p>
+                    <p class="book-publication-date">Published: {{ book.published_date }}</p>
+                </div>
+                {% if config.SHOW_SUGGESTER %}
+                <div class="book-suggester">
+                    <p>Suggested by:</p>
+                    <strong>{{ book.suggested_by }}</strong>
+                </div>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="controls">
+            <button id="submit-ballot-button" class="submit-button">Submit Ballot</button>
+        </div>
+        <div id="vote-message" class="form-message"></div>
+
+    {% else %} {# Default to plurality voting system #}
+        <p class="instructions">
+            Welcome! Please vote for the book you would like to read next month.
+        </p>
+
+        <div id="book-list">
+            {% for book in books %}
+            <div class="book-item" id="book-item-{{ book.id }}">
+                <div class="book-main-content">
+                    <div class="book-cover">
+                        {% if book.cover_image_url %}
+                            <img src="{{ book.cover_image_url }}" alt="Cover of {{ book.title }}">
+                        {% else %}
+                            <div class="cover-placeholder">No Image</div>
+                        {% endif %}
                     </div>
-                    <div class="vote-section">
-                        <button class="vote-button" data-id="{{ book.id }}">Vote</button>
-                        <span class="vote-count" id="votes-{{ book.id }}">0 votes</span>
+                    <div class="book-details">
+                        <div class="book-info">
+                            <h2 class="book-title">{{ book.title }}</h2>
+                            <p class="book-author">by {{ book.author }}</p>
+                            <p class="book-publication-date">Published: {{ book.published_date }}</p>
+                            {% if config.SHOW_SUGGESTER %}
+                                <p class="book-suggester-plurality">Suggested by: {{ book.suggested_by }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="vote-section">
+                            <button class="vote-button" data-id="{{ book.id }}">Vote</button>
+                            <span class="vote-count" id="votes-{{ book.id }}">0 votes</span>
+                        </div>
                     </div>
                 </div>
+                {% if book.summary %}
+                <div class="book-summary">
+                    <details>
+                        <summary>Show Summary</summary>
+                        <p>{{ book.summary }}</p>
+                    </details>
+                </div>
+                {% endif %}
             </div>
-            {% if book.summary %}
-            <div class="book-summary">
-                <details>
-                    <summary>Show Summary</summary>
-                    <p>{{ book.summary }}</p>
-                </details>
-            </div>
-            {% endif %}
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
+    {% endif %}
 
     <div class="controls">
-        <button id="export-button">Export Results</button>
+        <!-- MODIFIED: Added the 'submit-button' class for styling -->
+        <button id="export-button" class="submit-button">Export Results</button>
     </div>
 {% endblock %}
 
 {% block scripts %}
+    {# Conditionally load SortableJS only when needed #}
+    {% if voting_system == 'ranked_choice' %}
+        <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    {% endif %}
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 {% endblock %}
