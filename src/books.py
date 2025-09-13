@@ -73,5 +73,29 @@ class BookStore:
         
         return new_book_obj
 
+    def delete_book(self, book_id: str) -> bool:
+        """Removes a book by its ID from the store and saves to file."""
+        # 1. Find the book to remove from the in-memory list
+        book_to_delete = next((b for b in self.books if b.id == book_id), None)
+        if not book_to_delete:
+            return False # Book not found
+
+        self.books.remove(book_to_delete)
+        self.votes.pop(book_id, None) # Remove its vote count
+
+        # 2. Read the current file, filter out the book, and write back
+        try:
+            with open(BOOKS_FILE, 'r') as f:
+                all_books_raw = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            return False # File issue
+
+        filtered_books = [b for b in all_books_raw if b.get('id') != book_id]
+
+        with open(BOOKS_FILE, 'w') as f:
+            json.dump(filtered_books, f, indent=4)
+            
+        return True
+
 # Create a single, shared instance of the store for the entire application
 data_store = BookStore()

@@ -2,20 +2,33 @@ import os
 import json
 import csv
 import io
-from flask import Flask, render_template, jsonify, Response, request # MODIFIED: import request
-import uuid # NEW: To generate unique IDs for new books
+# MODIFIED: Add session, redirect, url_for, flash, and functools
+from flask import Flask, render_template, jsonify, Response, request, session, redirect, url_for, flash
+import uuid
+from functools import wraps # NEW: For creating our decorator
 
-# MODIFIED: Import the single data_store instance instead of the old variables.
 from src.books import data_store
 
 # --- Application Setup ---
 app = Flask(__name__)
+# NEW: A secret key is required for Flask sessions to work.
+# In a real app, this should be a long, random string stored securely.
+app.config['SECRET_KEY'] = 'dev-secret-key' 
+ADMIN_PASSWORD = 'admin' # In a real app, use environment variables for this.
 
-@app.before_request
-def initialize_data():
-    """Ensures book data is loaded before the first request."""
-    # MODIFIED: Call the load method on the data_store instance.
-    data_store.load_books()
+# --- Admin Authentication Decorator ---
+def admin_required(f):
+    """Decorator to restrict access to admin-only routes."""
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get('is_admin'):
+            flash('You need to be an admin to access this page.', 'error')
+            return redirect(url_for('admin_login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+# REMOVE the @app.before_request decorator and the initialize_data function.
+# We will call load_books directly in the route that needs it.
 
 # --- Routes ---
 
@@ -25,16 +38,44 @@ def landing():
     # We will create landing.html in the next step
     return render_template('landing.html')
 
+# NEW: Admin Login/Logout Routes
+@app.route('/admin/login', methods=['GET', 'POST'])
+def admin_login():
+    if request.method == 'POST':
+        password = request.form.get('password')
+        if password == ADMIN_PASSWORD:
+            session['is_admin'] = True
+            flash('Successfully logged in as admin.', 'success')
+            return redirect(url_for('vote_page'))
+        else:
+            flash('Incorrect password.', 'error')
+    return render_template('admin_login.html')
+
+@app.route('/admin/logout')
+def admin_logout():
+    session.pop('is_admin', None)
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('landing'))
+
+
 @app.route('/vote')
 def vote_page():
     """Renders the main page with the list of books for voting."""
+    # MODIFIED: Ensure data is loaded before rendering the page.
+    data_store.load_books() 
     return render_template('vote.html', books=data_store.books)
 
-@app.route('/add')
-def add_book_page():
-    """Renders the page for adding a new book."""
-    # We will create add_book.html in the next step
-    return render_template('add_book.html')
+# REMOVED: The old /add route is no longer needed.
+# @app.route('/add') ...
+
+# NEW: A central page for all admin tasks.
+@app.route('/admin')
+@admin_required
+def admin_page():
+    """Renders the admin panel for managing books."""
+    data_store.load_books()
+    return render_template('admin.html', books=data_store.books)
+
 
 @app.route('/results')
 def get_results():
@@ -71,6 +112,16 @@ def add_book():
 
     # We can't directly jsonify the Book object, so we convert it to a dict
     return jsonify(success=True, book=new_book.__dict__)
+
+# NEW: Route to handle deleting a book
+@app.route('/delete_book/<string:book_id>', methods=['POST'])
+@admin_required # PROTECTED: Apply the decorator
+def delete_book(book_id):
+    """Deletes a book from the store."""
+    success = data_store.delete_book(book_id)
+    if success:
+        return jsonify(success=True, message="Book deleted successfully.")
+    return jsonify(success=False, message="Book not found."), 404
 
 @app.route('/export')
 def export_results():

@@ -1,33 +1,5 @@
 [
     {
-        "id": "book_1",
-        "title": "Frankenstein",
-        "author": "Mary Shelley",
-        "suggested_by": "Alice",
-        "summary": "The story of Victor Frankenstein's monstrous creation and the havoc it caused has enthralled generations of readers and inspired countless writers of horror and suspense. With the author's own 1831 introduction.",
-        "page_count": 180,
-        "categories": [
-            "Fiction"
-        ],
-        "published_date": "2013-12-03",
-        "publisher": "Courier Corporation",
-        "cover_image_url": "http://books.google.com/books/content?id=9xHCAgAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
-    },
-    {
-        "id": "book_2",
-        "title": "Kindred",
-        "author": "Octavia E. Butler",
-        "suggested_by": "Bob",
-        "summary": "Selected by The Atlantic as one of THE GREAT AMERICAN NOVELS. (\"You have to read them.\") The New York Times best-selling author\u2019s time-travel classic that makes us feel the horrors of American slavery and indicts our country\u2019s lack of progress on racial reconciliation \u201cI lost an arm on my last trip home. My left arm.\u201d Dana\u2019s torment begins when she suddenly vanishes on her 26th birthday from California, 1976, and is dragged through time to antebellum Maryland to rescue a boy named Rufus, heir to a slaveowner\u2019s plantation. She soon realizes the purpose of her summons to the past: protect Rufus to ensure his assault of her Black ancestor so that she may one day be born. As she endures the traumas of slavery and the soul-crushing normalization of savagery, Dana fights to keep her autonomy and return to the present. Blazing the trail for neo-slavery narratives like Colson Whitehead\u2019s The Underground Railroad and Ta-Nehisi Coates\u2019s The Water Dancer, Butler takes one of speculative fiction\u2019s oldest tropes and infuses it with lasting depth and power. Dana not only experiences the cruelties of slavery on her skin but also grimly learns to accept it as a condition of her own existence in the present. \u201cWhere stories about American slavery are often gratuitous, reducing its horror to explicit violence and brutality, Kindred is controlled and precise\u201d (New York Times).",
-        "page_count": 290,
-        "categories": [
-            "Fiction"
-        ],
-        "published_date": "2022-09-20",
-        "publisher": "Beacon Press",
-        "cover_image_url": "http://books.google.com/books/content?id=4oRqEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
-    },
-    {
         "id": "book_3",
         "title": "Circe",
         "author": "Madeline Miller",
@@ -42,34 +14,6 @@
         "cover_image_url": "http://books.google.com/books/content?id=GrGdDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
     },
     {
-        "id": "book_4",
-        "title": "To Kill a Mockingbird",
-        "author": "Harper Lee",
-        "suggested_by": "Dana",
-        "summary": "The explosion of racial hate and violence in a small Alabama town is viewed by a little girl whose father defends a Black man accused of rape",
-        "page_count": 350,
-        "categories": [
-            "Fiction"
-        ],
-        "published_date": "1999-11-03",
-        "publisher": "HarperCollins Christian Publishing",
-        "cover_image_url": "http://books.google.com/books/content?id=ayJpGQeyxgkC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
-    },
-    {
-        "id": "book_f5385d82ffb047d69aa11b3ddb2ad6e9",
-        "title": "The Dispossessed",
-        "author": "Ursula K. Le Guin",
-        "suggested_by": "Test User",
-        "summary": "One of the very best must-read novels of all time - with a new introduction by Roddy Doyle 'A well told tale signifying a good deal; one to be read again and again' THE TIMES 'The book I wish I had written ... It's so far away from my own imagination, I'd love to sit at my desk one day and discover that I could think and write like Ursula Le Guin' Roddy Doyle 'Le Guin is a writer of phenomenal power' OBSERVER 'There was a wall. It did not look important - even a child could climb it. But the idea was real. Like all walls it was ambiguous, two-faced. What was inside it and what was outside it depended upon which side of it you were on...' Shevek is brilliant scientist who is attempting to find a new theory of time - but there are those who are jealous of his work, and will do anything to block him. So he leaves his homeland, hoping to find a place of more liberty and tolerance. Initially feted, Shevek soon finds himself being used as a pawn in a deadly political game. With powerful themes of freedom, society and the natural world's influence on competition and co-operation, THE DISPOSSESSED is a true classic of the 20th century.",
-        "page_count": 373,
-        "categories": [
-            "Fiction"
-        ],
-        "published_date": "2015-09-30",
-        "publisher": "Gateway",
-        "cover_image_url": "http://books.google.com/books/content?id=t9hpEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
-    },
-    {
         "id": "book_1d00ae78faf043bcbd97e5361bf6016c",
         "title": "The Bog Wife",
         "author": "Kay Chronister",
@@ -82,5 +26,45 @@
         "published_date": "2024-10-01",
         "publisher": "Catapult",
         "cover_image_url": "http://books.google.com/books/content?id=mXLvEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    {
+        "id": "book_639dc40ae7134e16a54343d97937868a",
+        "title": "Bel Canto",
+        "author": "Ann Patchett",
+        "suggested_by": "Fiona",
+        "summary": "Somewhere in South America, at the home of the country's vice president, a lavish birthday party is being held in honor of Mr. Hosokawa, a powerful Japanese businessman. Roxanne Coss, opera's most revered soprano, has mesmerized the international guests with her singing. It is a perfect evening\u2014until a band of gun-wielding terrorists breaks in through the air-conditioning vents and takes the entire party hostage. But what begins as a panicked, life-threatening scenario slowly evolves into something quite different, as terrorists and hostages forge unexpected bonds and people from different countries and continents become compatriots. Without the demands of the world to shape their days, life on the inside becomes more beautiful than anything they had known before. At once riveting and impassioned, the narrative becomes a moving exploration of how people communicate when music is the only common language. Friendship, compassion, and the chance for great love lead the characters to forget the real danger that has been set in motion and cannot be stopped. Ann Patchett has written a novel that is as lyrical and profound as it is unforgettable. Bel Canto engenders in the reader the very passion for art and the language of music that its characters discover. As a reader, you find yourself fervently wanting this captivity to continue forever, even though you know that real life waits on the other side of the garden wall. A virtuoso performance by one of our best and most important writers, Bel Canto is a novel to be cherished.",
+        "page_count": 335,
+        "categories": [
+            "Fiction"
+        ],
+        "published_date": "2001-05-22",
+        "publisher": "Harper Collins",
+        "cover_image_url": "http://books.google.com/books/content?id=zl428tiTsA4C&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    {
+        "id": "book_4fcd24c064934ec88bd49611b9f68d88",
+        "title": "Someone Else's Shoes",
+        "author": "Jojo Moyes",
+        "suggested_by": "Greta",
+        "summary": "INSTANT NEW YORK TIMES BESTSELLER! \u201cVery few authors have the power to make you laugh on one page and cry on the next. Moyes is one of them.\u201d \u2014The New York Times A story of mix-ups, mess-ups and making the most of second chances, this is the new novel from #1 New York Times bestselling author Jojo Moyes, author of Me Before You and The Giver of Stars Who are you when you are forced to walk in someone else\u2019s shoes? Nisha Cantor lives the globetrotting life of the seriously wealthy, until her husband announces a divorce and cuts her off. Nisha is determined to hang onto her glamorous life. But in the meantime, she must scramble to cope--she doesn\u2019t even have the shoes she was, until a moment ago, standing in. That\u2019s because Sam Kemp \u2013 in the bleakest point of her life \u2013 has accidentally taken Nisha\u2019s gym bag. But Sam hardly has time to worry about a lost gym bag--she\u2019s struggling to keep herself and her family afloat. When she tries on Nisha\u2019s six-inch high Christian Louboutin red crocodile shoes, the resulting jolt of confidence that makes her realize something must change\u2014and that thing is herself. Full of Jojo Moyes\u2019 signature humor, brilliant storytelling, and warmth, Someone Else\u2019s Shoes is a story about how just one little thing can suddenly change everything.",
+        "page_count": 465,
+        "categories": [
+            "Fiction"
+        ],
+        "published_date": "2024-02-13",
+        "publisher": "Penguin",
+        "cover_image_url": "http://books.google.com/books/content?id=QgviEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    {
+        "id": "book_b9ba016f4ebd44c49453227817976a78",
+        "title": "Demon Copperhead",
+        "author": "Barbara Kingsolver",
+        "suggested_by": "Helen",
+        "summary": "A special hardback edition of Demon Copperhead which includes an exclusive essay about Barbara Kingsolver's inspiration from Charles Dickens.",
+        "page_count": 0,
+        "categories": [],
+        "published_date": "2022-10-18",
+        "publisher": null,
+        "cover_image_url": "http://books.google.com/books/content?id=9k2JzwEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
     }
 ]

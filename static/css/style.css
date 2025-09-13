@@ -208,6 +208,34 @@ h1 {
     background-color: #0056b3;
 }
 
+/* NEW: Styles for flash messages */
+.flash-messages {
+    margin-bottom: 20px;
+}
+
+.flash-message {
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.flash-message.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.flash-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.flash-message.info {
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+
 /* NEW: Styles for the add book form */
 .book-form {
     background-color: #fff;

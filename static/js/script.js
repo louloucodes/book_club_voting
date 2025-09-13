@@ -4,9 +4,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const bookList = document.getElementById('book-list');
     const exportButton = document.getElementById('export-button');
 
-    // --- Elements for Add Book Page ---
+    // --- Elements for Admin Page ---
     const addBookForm = document.getElementById('add-book-form');
     const formMessage = document.getElementById('form-message');
+    const manageBookList = document.getElementById('manage-book-list'); // NEW
+
+    /**
+     * NEW: Creates and returns an HTML list item for the admin management list.
+     * @param {object} book - The book object returned from the API.
+     * @returns {HTMLLIElement} A new <li> element.
+     */
+    function createManageListItem(book) {
+        const listItem = document.createElement('li');
+        listItem.className = 'manage-list-item';
+        listItem.id = `manage-item-${book.id}`;
+
+        const span = document.createElement('span');
+        span.textContent = `${book.title} by ${book.author}`;
+
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'delete-button';
+        deleteButton.dataset.id = book.id;
+        deleteButton.innerHTML = '&times;'; // The 'x' symbol
+
+        listItem.appendChild(span);
+        listItem.appendChild(deleteButton);
+
+        return listItem;
+    }
 
     /**
      * Fetches the latest vote counts from the server and updates the UI.
@@ -94,9 +119,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
 
             if (response.ok) {
-                formMessage.textContent = `Success! "${result.book.title}" has been added to the list.`;
+                // MODIFIED: Instead of just showing a message, dynamically update the list.
+                formMessage.textContent = `Success! "${result.book.title}" has been added.`;
                 formMessage.classList.add('success');
                 addBookForm.reset(); // Clear the form fields
+
+                // Create the new list item and append it to the management list
+                const newListItem = createManageListItem(result.book);
+                manageBookList.appendChild(newListItem);
+
             } else {
                 formMessage.textContent = `Error: ${result.message || 'Could not add book.'}`;
                 formMessage.classList.add('error');
@@ -105,6 +136,45 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Form submission error:', error);
             formMessage.textContent = 'A network error occurred. Please try again.';
             formMessage.classList.add('error');
+        }
+    }
+
+    /**
+     * NEW: Handles clicks on the delete buttons in the admin panel.
+     */
+    async function handleDeleteClick(event) {
+        // Use event delegation to catch clicks on delete buttons
+        if (!event.target.classList.contains('delete-button')) {
+            return;
+        }
+
+        const button = event.target;
+        const bookId = button.dataset.id;
+        const listItem = document.getElementById(`manage-item-${bookId}`);
+        const bookTitle = listItem.querySelector('span').textContent.trim();
+
+        // Confirm with the user before deleting
+        if (confirm(`Are you sure you want to delete "${bookTitle}"?`)) {
+            try {
+                const response = await fetch(`/delete_book/${bookId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Remove the item from the DOM for immediate feedback
+                    listItem.remove();
+                } else {
+                    alert(`Error: ${result.message || 'Could not delete book.'}`);
+                }
+            } catch (error) {
+                console.error('Delete request error:', error);
+                alert('A network error occurred while trying to delete the book.');
+            }
         }
     }
 
@@ -119,9 +189,12 @@ document.addEventListener('DOMContentLoaded', () => {
         exportButton.addEventListener('click', handleExportClick);
     }
 
-    // NEW: Listener for the Add Book Page
+    // Listeners for the Admin Page
     if (addBookForm) {
         addBookForm.addEventListener('submit', handleAddBookSubmit);
+    }
+    if (manageBookList) { // NEW
+        manageBookList.addEventListener('click', handleDeleteClick);
     }
 
 
