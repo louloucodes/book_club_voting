@@ -27,7 +27,7 @@ h1 {
 #book-list {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 20px; /* Increased gap for larger cards */
 }
 
 .book-item {
@@ -36,8 +36,44 @@ h1 {
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     display: flex;
-    justify-content: space-between;
+    flex-direction: column; /* Changed to column for summary */
+    gap: 15px;
+}
+
+/* NEW: Main content area with cover and details */
+.book-main-content {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+/* NEW: Book cover image styles */
+.book-cover img {
+    width: 100px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.book-cover .cover-placeholder {
+    width: 100px;
+    height: 150px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    display: flex;
     align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-size: 0.9em;
+    text-align: center;
+}
+
+/* NEW: Container for all book text */
+.book-details {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
 }
 
 .book-info h2 {
@@ -49,6 +85,17 @@ h1 {
     margin: 0;
     color: #555;
     font-size: 0.9em;
+}
+
+/* NEW: Style for page count and published date */
+.book-meta {
+    font-size: 0.8em;
+    color: #888;
+    margin-top: 10px;
+}
+
+.book-meta span {
+    margin-right: 5px;
 }
 
 .vote-section {
@@ -77,6 +124,30 @@ h1 {
 
 .vote-button:hover, #export-button:hover {
     background-color: #0056b3;
+}
+
+/* NEW: Styles for the collapsible summary */
+.book-summary details {
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+
+.book-summary summary {
+    cursor: pointer;
+    font-weight: bold;
+    color: #007bff;
+    font-size: 0.9em;
+}
+
+.book-summary summary:hover {
+    text-decoration: underline;
+}
+
+.book-summary p {
+    margin-top: 10px;
+    font-size: 0.9em;
+    line-height: 1.6;
+    color: #444;
 }
 
 .controls {

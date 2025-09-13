@@ -3,24 +3,56 @@
         "id": "book_1",
         "title": "Frankenstein",
         "author": "Mary Shelley",
-        "suggested_by": "Alice"
+        "suggested_by": "Alice",
+        "summary": "The story of Victor Frankenstein's monstrous creation and the havoc it caused has enthralled generations of readers and inspired countless writers of horror and suspense. With the author's own 1831 introduction.",
+        "page_count": 180,
+        "categories": [
+            "Fiction"
+        ],
+        "published_date": "2013-12-03",
+        "publisher": "Courier Corporation",
+        "cover_image_url": "http://books.google.com/books/content?id=9xHCAgAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
     },
     {
         "id": "book_2",
         "title": "Kindred",
         "author": "Octavia E. Butler",
-        "suggested_by": "Bob"
+        "suggested_by": "Bob",
+        "summary": "Selected by The Atlantic as one of THE GREAT AMERICAN NOVELS. (\"You have to read them.\") The New York Times best-selling author\u2019s time-travel classic that makes us feel the horrors of American slavery and indicts our country\u2019s lack of progress on racial reconciliation \u201cI lost an arm on my last trip home. My left arm.\u201d Dana\u2019s torment begins when she suddenly vanishes on her 26th birthday from California, 1976, and is dragged through time to antebellum Maryland to rescue a boy named Rufus, heir to a slaveowner\u2019s plantation. She soon realizes the purpose of her summons to the past: protect Rufus to ensure his assault of her Black ancestor so that she may one day be born. As she endures the traumas of slavery and the soul-crushing normalization of savagery, Dana fights to keep her autonomy and return to the present. Blazing the trail for neo-slavery narratives like Colson Whitehead\u2019s The Underground Railroad and Ta-Nehisi Coates\u2019s The Water Dancer, Butler takes one of speculative fiction\u2019s oldest tropes and infuses it with lasting depth and power. Dana not only experiences the cruelties of slavery on her skin but also grimly learns to accept it as a condition of her own existence in the present. \u201cWhere stories about American slavery are often gratuitous, reducing its horror to explicit violence and brutality, Kindred is controlled and precise\u201d (New York Times).",
+        "page_count": 290,
+        "categories": [
+            "Fiction"
+        ],
+        "published_date": "2022-09-20",
+        "publisher": "Beacon Press",
+        "cover_image_url": "http://books.google.com/books/content?id=4oRqEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
     },
     {
         "id": "book_3",
         "title": "Circe",
         "author": "Madeline Miller",
-        "suggested_by": "Charlie"
+        "suggested_by": "Charlie",
+        "summary": "Di istana Helios, dewa matahari, lahir seorang anak perempuan. Tetapi Circe anak yang aneh\u2013\u2013tidak berkuasa seperti ayahnya, juga tidak memikat seperti ibunya. Karena tak punya teman, Circe mencarinya di dunia manusia, dan mengembangkan kemampuannya sebagai penyihir. Zeus, yang merasa terancam, mengasingkannya ke pulau terpencil. Circe mengasah bakatnya dan bertemu banyak tokoh paling termasyhur dalam mitologi, di antaranya Minotaur, Daedalus dan Icarus, Medea, dan Odysseus yang lihai. Tetapi wanita yang hanya sendirian menghadapi banyak bahaya, dan Circe tanpa sengaja membangkitkan murka manusia dan dewa-dewa, sehingga mesti berhadapan dengan dewa Olympus yang paling menakutkan dan pendendam. Untuk melindungi apa yang paling dicintainya, Circe harus mengerahkan seluruh kekuatannya dan memilih dengan tegas, apakah hendak berpihak kepada dewa-dewa yang telah melahirkannya, atau manusia yang telanjur disayanginya.",
+        "page_count": 546,
+        "categories": [
+            "Juvenile Fiction"
+        ],
+        "published_date": "2019-04-22",
+        "publisher": "Gramedia pustaka utama",
+        "cover_image_url": "http://books.google.com/books/content?id=GrGdDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
     },
     {
         "id": "book_4",
         "title": "To Kill a Mockingbird",
         "author": "Harper Lee",
-        "suggested_by": "Dana"
+        "suggested_by": "Dana",
+        "summary": "The explosion of racial hate and violence in a small Alabama town is viewed by a little girl whose father defends a Black man accused of rape",
+        "page_count": 350,
+        "categories": [
+            "Fiction"
+        ],
+        "published_date": "1999-11-03",
+        "publisher": "HarperCollins Christian Publishing",
+        "cover_image_url": "http://books.google.com/books/content?id=ayJpGQeyxgkC&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
     }
 ]
