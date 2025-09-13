@@ -1,4 +1,5 @@
 import uuid
+import json # NEW: Import json
 from functools import wraps
 from flask import (
     Blueprint, render_template, request, session, redirect, url_for, flash, jsonify, current_app
@@ -87,3 +88,35 @@ def update_order():
     if success:
         return jsonify(success=True, message="Book order updated successfully.")
     return jsonify(success=False, message="Failed to update book order."), 500
+
+# NEW: Route to update the voting system setting
+@admin_bp.route('/update_settings', methods=['POST'])
+@admin_required
+def update_settings():
+    data = request.get_json()
+    new_system = data.get('voting_system')
+
+    if new_system not in ['ranked_choice', 'plurality']:
+        return jsonify(success=False, message="Invalid voting system specified."), 400
+
+    try:
+        # Read the current settings
+        with open('data/settings.json', 'r') as f:
+            settings = json.load(f)
+        
+        # Update the voting system
+        settings['VOTING_SYSTEM'] = new_system
+        
+        # Write the new settings back to the file
+        with open('data/settings.json', 'w') as f:
+            json.dump(settings, f, indent=4)
+        
+        # Also update the config of the currently running app
+        current_app.config['VOTING_SYSTEM'] = new_system
+        
+        flash('Voting system updated successfully!', 'success')
+        return jsonify(success=True, message="Settings updated.")
+
+    except (IOError, json.JSONDecodeError) as e:
+        print(f"Error updating settings: {e}")
+        return jsonify(success=False, message="Could not save settings file."), 500

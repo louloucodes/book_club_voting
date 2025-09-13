@@ -59,6 +59,27 @@
         <button id="save-order-button" class="submit-button" style="display: none;">Save New Order</button>
         <div id="order-message" class="form-message"></div>
     </div>
+
+    <!-- NEW: Section for voting system settings -->
+    <div class="admin-section">
+        <h2>Voting System Settings</h2>
+        <form id="voting-system-form">
+            <p>Current system: <strong>{{ config.VOTING_SYSTEM|replace('_', ' ')|title }}</strong></p>
+            <div class="form-group">
+                <label>Select a new voting system:</label>
+                <div class="radio-group">
+                    <input type="radio" id="ranked_choice" name="voting_system" value="ranked_choice" {% if config.VOTING_SYSTEM == 'ranked_choice' %}checked{% endif %}>
+                    <label for="ranked_choice">Ranked Choice</label>
+                </div>
+                <div class="radio-group">
+                    <input type="radio" id="plurality" name="voting_system" value="plurality" {% if config.VOTING_SYSTEM == 'plurality' %}checked{% endif %}>
+                    <label for="plurality">Plurality</label>
+                </div>
+            </div>
+            <button type="submit" class="submit-button">Save Settings</button>
+        </form>
+        <div id="settings-message" class="form-message"></div>
+    </div>
 {% endblock %}
 
 {% block scripts %}

@@ -136,10 +136,51 @@ function createManageListItem(book) {
     return listItem;
 }
 
+/**
+ * Handles submission of the voting system settings form.
+ */
+async function handleSettingsSubmit(event) {
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+    const settingsData = {
+        voting_system: formData.get('voting_system')
+    };
+
+    const settingsMessage = document.getElementById('settings-message');
+    settingsMessage.textContent = '';
+    settingsMessage.className = 'form-message';
+
+    try {
+        const response = await fetch('/admin/update_settings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(settingsData)
+        });
+
+        if (response.ok) {
+            settingsMessage.textContent = 'Settings saved successfully! The page will now reload to apply changes.';
+            settingsMessage.classList.add('success');
+            // Reload the page after a short delay to show the message and apply changes server-side
+            setTimeout(() => window.location.reload(), 2000);
+        } else {
+            const result = await response.json();
+            throw new Error(result.message || 'An unknown error occurred.');
+        }
+    } catch (error) {
+        settingsMessage.textContent = `Error: ${error.message}`;
+        settingsMessage.classList.add('error');
+    }
+}
+
+
 // --- Initialization for Admin Page ---
 export function initAdminPage() {
     const adminForm = document.getElementById('add-book-form');
     const manageBookList = document.getElementById('manage-book-list');
+    const saveOrderButton = document.getElementById('save-order-button');
+    // NEW: Get the settings form
+    const settingsForm = document.getElementById('voting-system-form');
 
     if (adminForm) {
         adminForm.addEventListener('submit', handleAddBookSubmit);
@@ -155,8 +196,11 @@ export function initAdminPage() {
             }
         });
     }
-    const saveOrderButton = document.getElementById('save-order-button');
     if (saveOrderButton) {
         saveOrderButton.addEventListener('click', handleSaveOrder);
+    }
+    // NEW: Add event listener for the settings form
+    if (settingsForm) {
+        settingsForm.addEventListener('submit', handleSettingsSubmit);
     }
 }

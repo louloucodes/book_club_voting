@@ -34,6 +34,16 @@
                         <strong>{{ book.suggested_by }}</strong>
                     </div>
                     {% endif %}
+
+                    <!-- NEW: Add the summary dropdown, same as in the plurality view -->
+                    {% if book.summary %}
+                    <div class="book-summary">
+                        <details>
+                            <summary>Show Summary</summary>
+                            <p>{{ book.summary }}</p>
+                        </details>
+                    </div>
+                    {% endif %}
                 </li>
             {% endfor %}
         </ul>
