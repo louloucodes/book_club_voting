@@ -172,11 +172,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (settingsForm) {
         settingsForm.addEventListener('submit', handleSettingsSubmit);
         // Also show/hide the points input based on radio selection
-        // FIX: The variable was 'form', but it should be 'settingsForm'.
         settingsForm.elements.voting_system.forEach(radio => {
             radio.addEventListener('change', (e) => {
-                document.getElementById('cumulative-points-group').style.display = 
-                    e.target.value === 'cumulative' ? 'block' : 'none';
+                const pointsGroup = document.getElementById('cumulative-points-group');
+                if (e.target.value === 'cumulative') {
+                    pointsGroup.classList.remove('hidden');
+                } else {
+                    pointsGroup.classList.add('hidden');
+                }
             });
         });
     }

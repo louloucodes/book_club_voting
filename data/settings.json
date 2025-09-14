@@ -1,3 +1,3 @@
 {
-    "VOTING_SYSTEM": "cumulative"
+    "VOTING_SYSTEM": "ranked_choice"
 }

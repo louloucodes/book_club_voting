@@ -12,3 +12,13 @@
   This file acts as the main entry point for all CSS.
   It imports all other stylesheets.
 */
+
+.form-message.error {
+    color: #D8000C;
+    background-color: #FFD2D2;
+}
+
+/* Utility class for hiding elements */
+.hidden {
+    display: none;
+}
