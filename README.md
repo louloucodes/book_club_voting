@@ -6,25 +6,36 @@ This project is a multi-page web application designed for a book club to easily 
 
 ## ⭐ Key Features in Action
 
-The admin panel provides full control over the book list, including adding, deleting, and reordering books via drag-and-drop. The public voting page allows members to easily cast their votes.
+The admin panel provides full control over the book list and application settings. The public voting page allows members to easily cast their votes using the currently active system.
 
-| Admin Panel (Add, Delete, Reorder)            | Public Voting Page                        |
+| Admin Panel (Manage Books & Settings)         | Public Voting Page                        |
 | --------------------------------------------- | ----------------------------------------- |
 | <img src="assets/admin_screen_recording.gif" alt="Admin panel demo showing adding, deleting, and reordering books" width="400"> | <img src="assets/voting_page.png" alt="Public voting page with book list" width="400"> |
 
+### Flexible Voting Systems
+
+The application supports multiple voting systems, which can be configured directly from the admin panel to suit the book club's needs:
+
+*   **Plurality Voting:** The classic system where each member gets one vote for one book.
+*   **Ranked-Choice Voting:** Members rank their preferred books in order. If no book wins a majority, the book with the fewest votes is eliminated, and its votes are redistributed until a winner emerges.
+*   **Cumulative Voting:** Each member is given a set number of points (e.g., 5) to distribute among the books however they wish. They can give all points to one book or spread them across multiple choices.
+
 ## 🏗️ Software Architecture
 
-The application is built with a clean, scalable structure that separates concerns using Flask Blueprints and a centralized configuration.
+The application is built with a clean, scalable structure that separates concerns using Flask Blueprints and a strategy pattern for voting logic.
 
 *   **`config.py`:** Centralizes application configuration. It loads sensitive data like the `SECRET_KEY` and `ADMIN_PASSWORD` from environment variables for improved security.
-*   **`app.py`:** The main entry point for the Flask application. It initializes the app, loads the configuration, and registers the application's blueprints.
-*   **`src/` directory:** Contains the core backend logic, organized into blueprints and data modules.
-    *   **`admin.py`:** A Flask Blueprint that encapsulates all administrative functionality, including login, logout, and all book management routes (add, delete, reorder).
-    *   **`books.py`:** Defines the `Book` and `BookStore` classes, managing all data loading, saving, and in-memory storage in an object-oriented way.
+*   **`app.py`:** The main entry point for the Flask application. It contains the `create_app` factory, which initializes the app, loads the configuration, and registers the application's blueprints.
+*   **`src/` directory:** Contains the core backend logic, organized by function.
+    *   **`main.py`:** A Flask Blueprint for all public-facing routes, such as the voting and results pages.
+    *   **`admin.py`:** A Flask Blueprint that encapsulates all administrative functionality, including login, logout, book management, and voting system configuration.
+    *   **`books.py`:** Defines the `Book` and `BookStore` classes, managing all data loading, saving, and in-memory storage of books.
+    *   **`voting.py`:** Implements the **Strategy Pattern** for different voting systems (`PluralityStrategy`, `RankedChoiceStrategy`, `CumulativeVotingStrategy`).
+    *   **`voting_manager.py`:** Defines the `VotingManager` class, which acts as a context for the current voting strategy and handles all voting-related operations like recording votes and calculating results.
 *   **`templates/`:** Contains all Jinja2 HTML templates, including a `base.html` for a consistent layout across all pages.
 *   **`static/`:** Contains all frontend assets.
-    *   **`css/`:** CSS is organized into a component-based structure (`_navbar.css`, `_forms.css`, etc.) and imported into a single `main.css` file for maintainability.
-    *   **`js/`:** Contains the client-side JavaScript for handling dynamic features like voting and admin actions.
+    *   **`css/`:** CSS is organized into a component-based structure and imported into a single `main.css` file.
+    *   **`js/`:** Contains the client-side JavaScript for handling dynamic features on the admin and voting pages.
 
 ## 💻 Technology Stack
 
