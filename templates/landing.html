@@ -6,6 +6,84 @@
     <div class="hero-section">
         <h1>Welcome to the Book Club</h1>
         <p>Your central place to suggest and vote on our next read.</p>
+        
+        {# NEW: Display the current voting system #}
+        <p class="current-system-message">
+            The current voting system is: <strong>{{ voting_system_display }}</strong>
+        </p>
+
         <a href="{{ url_for('main.vote_page') }}" class="cta-button">Go to Voting</a>
     </div>
+
+    <h1>Explanation of Voting Systems</h1>
+
+    <div class="tab-container">
+        {# MODIFIED: Add conditional class for highlighting #}
+        <button class="tab-link {% if voting_system == 'plurality' %}current-system{% endif %}" data-target="plurality">Plurality</button>
+        <button class="tab-link {% if voting_system == 'ranked_choice' %}current-system{% endif %}" data-target="ranked-choice">Ranked Choice</button>
+        <button class="tab-link {% if voting_system == 'cumulative' %}current-system{% endif %}" data-target="cumulative">Cumulative</button>
+    </div>
+
+    <!-- Tab content panels -->
+
+    <!-- Panel 1: Plurality -->
+    <div id="plurality" class="tab-content">
+        <h2>Plurality Voting</h2>
+        <p>In a plurality voting system, the candidate with the most votes wins. This is the simplest form of voting.</p>
+    </div>
+
+    <!-- Panel 2: Ranked Choice -->
+    <div id="ranked-choice" class="tab-content">
+        <h2>Ranked Choice Voting</h2>
+        <p>In ranked choice voting, voters rank candidates in order of preference. If no candidate receives a majority of first-choice votes, the candidate with the fewest votes is eliminated and their votes are redistributed until a winner is found.</p>
+    </div>
+
+    <!-- Panel 3: Cumulative -->
+    <div id="cumulative" class="tab-content">
+        <h2>Cumulative Voting</h2>
+        <p>Cumulative voting allows voters to cast multiple votes for a single candidate or distribute their votes among several candidates. This system aims to enhance representation for minority groups.</p>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }} {# This includes any scripts from base.html #}
+    {# FIX: Use a simple, local script for tabs instead of the incorrect admin.js #}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabContainer = document.querySelector('.tab-container');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const tabs = document.querySelectorAll('.tab-link');
+
+            // Set initial active tab based on the current voting system
+            const currentSystem = "{{ voting_system }}";
+            tabs.forEach(tab => {
+                if (tab.dataset.target === currentSystem) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+            tabContents.forEach(panel => {
+                if (panel.id === currentSystem) {
+                    panel.style.display = 'block';
+                } else {
+                    panel.style.display = 'none';
+                }
+            });
+
+            // Handle tab clicks
+            tabContainer.addEventListener('click', (event) => {
+                if (!event.target.classList.contains('tab-link')) return;
+
+                const targetPanelId = event.target.dataset.target;
+
+                tabs.forEach(tab => tab.classList.remove('active'));
+                event.target.classList.add('active');
+
+                tabContents.forEach(panel => {
+                    panel.style.display = panel.id === targetPanelId ? 'block' : 'none';
+                });
+            });
+        });
+    </script>
 {% endblock %}

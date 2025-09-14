@@ -1,3 +1,4 @@
 {
-    "VOTING_SYSTEM": "ranked_choice"
+    "VOTING_SYSTEM": "cumulative",
+    "POINTS_PER_VOTER": 10
 }

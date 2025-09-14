@@ -7,7 +7,12 @@ main_bp = Blueprint('main', __name__)
 @main_bp.route('/')
 def landing():
     """Renders the new landing page."""
-    return render_template('landing.html')
+    voting_system = current_app.config.get('VOTING_SYSTEM', 'plurality')
+    return render_template(
+        'landing.html', 
+        voting_system=voting_system,
+        voting_system_display=voting_system.replace('_', ' ').title()
+    )
 
 @main_bp.route('/vote')
 def vote_page():
