@@ -90,9 +90,44 @@ class RankedChoiceStrategy(VotingStrategy):
         # If no winner after all rounds, it's complex. Return first-preference for now.
         return self.get_public_results()
 
+class CumulativeVotingStrategy(VotingStrategy):
+    """Cumulative voting: voters distribute a set number of points among books."""
+    def __init__(self, points_per_voter=5):
+        self.points_per_voter = points_per_voter
+        self.votes = []  # Each vote is a dict {book_id: points}
+
+    def record_vote(self, vote_data):
+        # Expects vote_data to be a dict of {book_id: points}
+        ballot = vote_data.get('ballot')
+        if not isinstance(ballot, dict) or not ballot:
+            return False
+        total_points = sum(ballot.values())
+        if total_points != self.points_per_voter:
+            return False  # Invalid ballot
+        self.votes.append(ballot)
+        return True
+
+    def calculate_results(self, books):
+        # Sum points for each book
+        results = Counter()
+        for ballot in self.votes:
+            for book_id, points in ballot.items():
+                results[book_id] += points
+        return dict(results)
+
+    def get_public_results(self):
+        # Show current point totals for each book
+        results = Counter()
+        for ballot in self.votes:
+            for book_id, points in ballot.items():
+                results[book_id] += points
+        return dict(results)
+
 # Factory to get the correct strategy
-def get_voting_strategy(strategy_name: str) -> VotingStrategy:
+def get_voting_strategy(strategy_name: str, points_per_voter: int = 5) -> VotingStrategy:
     if strategy_name == 'ranked_choice':
         return RankedChoiceStrategy()
+    if strategy_name == 'cumulative':
+        return CumulativeVotingStrategy(points_per_voter=points_per_voter)
     # Default to plurality
     return PluralityStrategy()

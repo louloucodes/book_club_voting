@@ -14,7 +14,7 @@
         <div class="nav-links">
             <a href="{{ url_for('main.vote_page') }}">Vote</a>
             {% if session.is_admin %}
-                <a href="{{ url_for('admin.panel') }}">Admin Panel</a>
+                <a href="{{ url_for('admin.admin_page') }}">Admin Panel</a>
                 <a href="{{ url_for('admin.logout') }}">Logout</a>
             {% else %}
                 <a href="{{ url_for('admin.login') }}">Admin Login</a>

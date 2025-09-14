@@ -52,6 +52,31 @@
             <button id="submit-ballot-button" class="submit-button">Submit Ballot</button>
         </div>
         <div id="vote-message" class="form-message"></div>
+    {% elif voting_system == 'cumulative' %}
+        <p class="instructions">
+            Distribute {{ points_per_voter }} points among the books. You can give all points to one book or split them as you wish.
+        </p>
+        <form id="cumulative-vote-form" data-points-per-voter="{{ points_per_voter }}">
+            <ul id="cumulative-list" class="cumulative-list">
+                {% for book in books %}
+                <li class="book-item" data-id="{{ book.id }}">
+                    <div class="book-info">
+                        <h2 class="book-title">{{ book.title }}</h2>
+                        <p class="book-author">by {{ book.author }}</p>
+                    </div>
+                    <div class="cumulative-input">
+                        <label for="points-{{ book.id }}">Points:</label>
+                        <input type="number" id="points-{{ book.id }}" name="points-{{ book.id }}" min="0" max="{{ points_per_voter }}" value="0" class="points-input">
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            <div class="controls">
+                <span id="points-remaining">Points remaining: {{ points_per_voter }}</span>
+                <button type="submit" id="submit-cumulative-ballot" class="submit-button">Submit Ballot</button>
+            </div>
+            <div id="vote-message" class="form-message"></div>
+        </form>
     {% else %} {# Default to plurality voting system #}
         <p class="instructions">
             Welcome! Please vote for the book you would like to read next month.

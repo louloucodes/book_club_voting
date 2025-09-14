@@ -1,4 +1,25 @@
 /**
+ * Handles switching between admin tabs.
+ */
+function handleTabSwitching(event) {
+    if (!event.target.classList.contains('tab-link')) return;
+
+    const tabs = document.querySelectorAll('.tab-link');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const targetPanelId = event.target.dataset.target;
+
+    tabs.forEach(tab => tab.classList.remove('active'));
+    event.target.classList.add('active');
+
+    tabContents.forEach(panel => {
+        panel.classList.remove('active');
+        if (panel.id === targetPanelId) {
+            panel.classList.add('active');
+        }
+    });
+}
+
+/**
  * Handles the submission of the "Add Book" form.
  */
 async function handleAddBookSubmit(event) {
@@ -6,234 +27,157 @@ async function handleAddBookSubmit(event) {
     const form = event.target;
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
-    
-    const bookData = {
-        title: data.title,
-        author: data.author,
-        suggested_by: data.suggested_by
-    };
-
-    const formMessage = document.getElementById('form-message');
-    formMessage.textContent = '';
-    formMessage.className = 'form-message';
+    const messageEl = document.getElementById('form-message'); // Specific to add-book form
 
     try {
-        const response = await fetch('/admin/add_book', {
+        const response = await fetch(form.action, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(bookData)
+            body: JSON.stringify(data),
         });
-
         const result = await response.json();
 
-        if (response.ok && result.success) {
-            formMessage.textContent = 'Book added successfully!';
-            formMessage.classList.add('success');
+        if (response.ok) {
+            messageEl.textContent = 'Book added successfully! The page will now refresh.';
+            messageEl.className = 'form-message success';
             form.reset();
-            const newListItem = createManageListItem(result.book);
-            document.getElementById('manage-book-list').appendChild(newListItem);
+            setTimeout(() => location.reload(), 1500); // Refresh to show the new book
         } else {
-            formMessage.textContent = `Error: ${result.message || 'Could not add book.'}`;
-            formMessage.classList.add('error');
+            throw new Error(result.message || 'An unknown error occurred.');
         }
     } catch (error) {
-        console.error('Add book error:', error);
-        formMessage.textContent = 'A network error occurred. Please try again.';
-        formMessage.classList.add('error');
+        messageEl.textContent = `Error: ${error.message}`;
+        messageEl.className = 'form-message error';
     }
 }
 
 /**
- * Handles clicks on the delete buttons in the admin panel.
+ * Handles clicks on the delete button for a book.
  */
 async function handleDeleteClick(event) {
-    if (!event.target.classList.contains('delete-button')) {
-        return;
-    }
+    if (!event.target.classList.contains('delete-button')) return;
 
-    const button = event.target;
-    const bookId = button.dataset.id;
-    const listItem = document.getElementById(`manage-item-${bookId}`);
-    const bookTitle = listItem.querySelector('.book-title').textContent.trim();
+    const bookId = event.target.dataset.id;
+    const bookTitle = event.target.closest('.book-item').querySelector('.book-title').textContent;
+    const messageEl = document.getElementById('order-message'); // Use the message area in this panel
 
     if (confirm(`Are you sure you want to delete "${bookTitle}"?`)) {
         try {
-            const response = await fetch(`/admin/delete_book/${bookId}`, { method: 'POST' });
+            const response = await fetch(`/admin/delete_book/${bookId}`, { method: 'DELETE' });
             const result = await response.json();
 
-            if (response.ok && result.success) {
-                listItem.remove();
+            if (response.ok) {
+                event.target.closest('.book-item').remove();
+                messageEl.textContent = 'Book deleted successfully.';
+                messageEl.className = 'form-message success';
             } else {
-                alert(`Error: ${result.message || 'Could not delete book.'}`);
+                throw new Error(result.message || 'Failed to delete book.');
             }
         } catch (error) {
-            console.error('Delete request error:', error);
-            alert('A network error occurred while trying to delete the book.');
+            messageEl.textContent = `Error: ${error.message}`;
+            messageEl.className = 'form-message error';
         }
     }
 }
 
 /**
- * Saves the new order of books in the admin panel.
+ * Handles saving the new order of books.
  */
 async function handleSaveOrder() {
-    const manageBookList = document.getElementById('manage-book-list');
-    const listItems = manageBookList.querySelectorAll('li');
-    const orderedIds = Array.from(listItems).map(item => item.dataset.id);
-
-    const orderMessage = document.getElementById('order-message');
-    orderMessage.textContent = '';
-    orderMessage.className = 'form-message';
+    const bookItems = document.querySelectorAll('#manage-book-list .book-item');
+    const order = Array.from(bookItems).map(item => item.dataset.id);
+    const messageEl = document.getElementById('order-message');
 
     try {
         const response = await fetch('/admin/update_order', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ order: orderedIds })
+            body: JSON.stringify({ order }),
         });
         const result = await response.json();
+
         if (response.ok) {
-            orderMessage.textContent = 'Order saved successfully!';
-            orderMessage.className = 'form-message success';
+            messageEl.textContent = 'Book order saved successfully.';
+            messageEl.className = 'form-message success';
             document.getElementById('save-order-button').style.display = 'none';
         } else {
-            throw new Error(result.message);
+            throw new Error(result.message || 'Failed to save order.');
         }
     } catch (error) {
-        orderMessage.textContent = `Error saving order: ${error.message}`;
-        orderMessage.className = 'form-message error';
+        messageEl.textContent = `Error: ${error.message}`;
+        messageEl.className = 'form-message error';
     }
 }
 
 /**
- * Creates and returns an HTML list item for the admin management list.
- */
-function createManageListItem(book) {
-    const listItem = document.createElement('li');
-    listItem.className = 'book-item';
-    listItem.dataset.id = book.id;
-    listItem.id = `manage-item-${book.id}`;
-
-    listItem.innerHTML = `
-        <span class="drag-handle">&#x2630;</span>
-        <div class="book-cover">
-            ${book.cover_image_url 
-                ? `<img src="${book.cover_image_url}" alt="Cover of ${book.title}">` 
-                : `<div class="cover-placeholder">No Image</div>`
-            }
-        </div>
-        <div class="book-info">
-            <h2 class="book-title">${book.title}</h2>
-            <p class="book-author">by ${book.author}</p>
-            <p class="book-publication-date">Published: ${book.published_date || 'N/A'}</p>
-        </div>
-        <div class="book-suggester">
-            <p>Suggested by:</p>
-            <strong>${book.suggested_by || 'N/A'}</strong>
-        </div>
-        <button class="delete-button" data-id="${book.id}">&times;</button>
-    `;
-    return listItem;
-}
-
-/**
- * Handles submission of the voting system settings form.
+ * Handles submission of the settings form.
  */
 async function handleSettingsSubmit(event) {
     event.preventDefault();
     const form = event.target;
     const formData = new FormData(form);
-    const settingsData = {
-        voting_system: formData.get('voting_system')
-    };
-
-    const settingsMessage = document.getElementById('settings-message');
-    settingsMessage.textContent = '';
-    settingsMessage.className = 'form-message';
+    const data = Object.fromEntries(formData.entries());
+    const messageEl = document.getElementById('settings-message');
 
     try {
         const response = await fetch('/admin/update_settings', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(settingsData)
+            body: JSON.stringify(data),
         });
+        const result = await response.json();
 
         if (response.ok) {
-            settingsMessage.textContent = 'Settings saved successfully! The page will now reload to apply changes.';
-            settingsMessage.classList.add('success');
-            // Reload the page after a short delay to show the message and apply changes server-side
-            setTimeout(() => window.location.reload(), 2000);
+            messageEl.textContent = 'Settings updated successfully!';
+            messageEl.className = 'form-message success';
         } else {
-            const result = await response.json();
-            throw new Error(result.message || 'An unknown error occurred.');
+            throw new Error(result.message || 'Failed to update settings.');
         }
     } catch (error) {
-        settingsMessage.textContent = `Error: ${error.message}`;
-        settingsMessage.classList.add('error');
+        messageEl.textContent = `Error: ${error.message}`;
+        messageEl.className = 'form-message error';
     }
 }
 
-/**
- * Handles the logic for switching between admin tabs.
- */
-function handleTabSwitching(event) {
-    // Ensure the clicked element is a tab link
-    if (!event.target.classList.contains('tab-link')) {
-        return;
-    }
-
-    const clickedTab = event.target;
-    const targetPanelId = clickedTab.dataset.target;
-    const targetPanel = document.getElementById(targetPanelId);
-
-    // Remove 'active' class from all tabs and panels
-    document.querySelectorAll('.tab-link').forEach(tab => {
-        tab.classList.remove('active');
-    });
-    document.querySelectorAll('.tab-content').forEach(panel => {
-        panel.classList.remove('active');
-    });
-
-    // Add 'active' class to the clicked tab and its corresponding panel
-    clickedTab.classList.add('active');
-    if (targetPanel) {
-        targetPanel.classList.add('active');
-    }
-}
-
-// --- Initialization for Admin Page ---
-export function initAdminPage() {
-    const adminForm = document.getElementById('add-book-form');
+// --- Main Initialization ---
+document.addEventListener('DOMContentLoaded', () => {
+    const tabContainer = document.querySelector('.tab-container');
+    const addBookForm = document.getElementById('add-book-form');
     const manageBookList = document.getElementById('manage-book-list');
     const saveOrderButton = document.getElementById('save-order-button');
-    // NEW: Get the settings form
     const settingsForm = document.getElementById('voting-system-form');
 
-    if (adminForm) {
-        adminForm.addEventListener('submit', handleAddBookSubmit);
+    if (tabContainer) {
+        tabContainer.addEventListener('click', handleTabSwitching);
+    }
+    if (addBookForm) {
+        addBookForm.addEventListener('submit', handleAddBookSubmit);
     }
     if (manageBookList) {
         manageBookList.addEventListener('click', handleDeleteClick);
-        
-        new Sortable(manageBookList, {
-            animation: 150,
-            handle: '.drag-handle',
-            onUpdate: () => {
-                document.getElementById('save-order-button').style.display = 'inline-block';
-            }
-        });
+        // Initialize SortableJS for drag-and-drop
+        if (typeof Sortable !== 'undefined') {
+            new Sortable(manageBookList, {
+                animation: 150,
+                handle: '.drag-handle',
+                onUpdate: () => {
+                    document.getElementById('save-order-button').style.display = 'inline-block';
+                }
+            });
+        }
     }
     if (saveOrderButton) {
         saveOrderButton.addEventListener('click', handleSaveOrder);
     }
-    // NEW: Add event listener for the settings form
     if (settingsForm) {
         settingsForm.addEventListener('submit', handleSettingsSubmit);
+        // Also show/hide the points input based on radio selection
+        // FIX: The variable was 'form', but it should be 'settingsForm'.
+        settingsForm.elements.voting_system.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                document.getElementById('cumulative-points-group').style.display = 
+                    e.target.value === 'cumulative' ? 'block' : 'none';
+            });
+        });
     }
-
-    // NEW: Add event listener for the tab container
-    const tabContainer = document.querySelector('.tab-container');
-    if (tabContainer) {
-        tabContainer.addEventListener('click', handleTabSwitching);
-    }
-}
+});

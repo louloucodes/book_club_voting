@@ -12,17 +12,20 @@ def landing():
 @main_bp.route('/vote')
 def vote_page():
     """Renders the main page with the list of books for voting."""
-    current_app.data_store.load_books() 
+    # The BookStore is already loaded at startup. This call is not needed
+    # and was preventing newly added books from appearing.
+    # current_app.book_store.load_books() 
     return render_template(
         'vote.html', 
-        books=current_app.data_store.books, 
-        voting_system=current_app.config['VOTING_SYSTEM']
+        books=current_app.book_store.books, 
+        voting_system=current_app.config['VOTING_SYSTEM'],
+        points_per_voter=current_app.config.get('POINTS_PER_VOTER', 5)
     )
 
 @main_bp.route('/results')
 def get_results():
     """Provides the current vote counts as JSON."""
-    return jsonify(current_app.data_store.voting_strategy.get_public_results())
+    return jsonify(current_app.voting_manager.get_public_results())
 
 # MODIFIED: This route now handles both plurality and ranked-choice votes.
 # It accepts POST requests to /vote and /vote/<book_id>
@@ -43,10 +46,10 @@ def vote(book_id=None):
         return jsonify(success=False, message="Missing vote data."), 400
 
     # Let the strategy object handle the data
-    success = current_app.data_store.voting_strategy.record_vote(vote_data)
+    success = current_app.voting_manager.record_vote(vote_data)
     
     if success:
-        return jsonify(success=True, message="Vote counted.")
+        return jsonify(success=True, message="Vote recorded successfully.")
     
     # If the strategy failed, it's because the data was wrong for it
     return jsonify(success=False, message="Invalid vote data for the current voting system."), 400
@@ -55,14 +58,14 @@ def vote(book_id=None):
 @main_bp.route('/export')
 def export_results():
     """Exports the current vote counts to a CSV file."""
-    book_titles = {book.id: book.title for book in current_app.data_store.books}
-    
     output = io.StringIO()
     writer = csv.writer(output)
     
+    book_titles = {book.id: book.title for book in current_app.book_store.books}
+    
     writer.writerow(['Book Title', 'Votes'])
     
-    results = current_app.data_store.voting_strategy.get_public_results()
+    results = current_app.voting_manager.get_public_results()
     for book_id, count in results.items():
         writer.writerow([book_titles.get(book_id, 'Unknown Book'), count])
     

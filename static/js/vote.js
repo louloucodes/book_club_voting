@@ -156,6 +156,103 @@ async function handleBallotSubmit() {
 }
 
 /**
+ * Handles input changes for the cumulative voting form.
+ * Updates the "points remaining" display and validates the total.
+ * @param {number} pointsPerVoter - The total number of points a voter can allocate.
+ */
+function handleCumulativeInputChange(pointsPerVoter) {
+    const inputs = document.querySelectorAll('.points-input');
+    let totalPointsUsed = 0;
+    inputs.forEach(input => {
+        totalPointsUsed += parseInt(input.value, 10) || 0;
+    });
+
+    const pointsRemaining = pointsPerVoter - totalPointsUsed;
+    const pointsRemainingEl = document.getElementById('points-remaining');
+    const submitButton = document.getElementById('submit-cumulative-ballot');
+
+    pointsRemainingEl.textContent = `Points remaining: ${pointsRemaining}`;
+
+    // Dynamically update the max value for each input
+    inputs.forEach(input => {
+        const currentValue = parseInt(input.value, 10) || 0;
+        // The most a user can add to this input is its current value plus any remaining points.
+        input.max = currentValue + pointsRemaining;
+    });
+
+    // Disable submit button if the total is not correct
+    if (pointsRemaining !== 0) {
+        submitButton.disabled = true;
+        pointsRemainingEl.style.color = 'green'; // Highlight if invalid
+    } else {
+        submitButton.disabled = false;
+        pointsRemainingEl.style.color = 'red'; // Reset color
+    }
+}
+
+/**
+ * Handles the submission of a cumulative voting ballot.
+ * @param {Event} event - The form submission event.
+ * @param {number} pointsPerVoter - The total number of points allowed.
+ */
+async function handleCumulativeBallotSubmit(event, pointsPerVoter) {
+    event.preventDefault(); // Prevent default form submission
+
+    const inputs = document.querySelectorAll('.points-input');
+    const ballot = {};
+    let totalPointsUsed = 0;
+    let summaryHtml = '<p>You have allocated your points as follows:</p><ul>';
+
+    inputs.forEach(input => {
+        const points = parseInt(input.value, 10) || 0;
+        if (points > 0) {
+            const bookItem = input.closest('.book-item');
+            const bookId = bookItem.dataset.id;
+            const bookTitle = bookItem.querySelector('.book-title').textContent;
+            
+            ballot[bookId] = points;
+            summaryHtml += `<li><strong>${bookTitle}:</strong> ${points} point(s)</li>`;
+        }
+        totalPointsUsed += points;
+    });
+    summaryHtml += '</ul>';
+
+    if (totalPointsUsed !== pointsPerVoter) {
+        alert(`You must allocate exactly ${pointsPerVoter} points. You have used ${totalPointsUsed}.`);
+        return;
+    }
+
+    showConfirmationModal('Confirm Your Ballot', summaryHtml, async () => {
+        const voteMessage = document.getElementById('vote-message');
+        voteMessage.textContent = '';
+        voteMessage.className = 'form-message';
+
+        try {
+            const response = await fetch('/vote', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ballot })
+            });
+            const result = await response.json();
+
+            if (response.ok) {
+                voteMessage.textContent = 'Your ballot has been submitted successfully!';
+                voteMessage.classList.add('success');
+                document.getElementById('submit-cumulative-ballot').disabled = true;
+                hideModal();
+            } else {
+                throw new Error(result.message || 'Could not submit ballot.');
+            }
+        } catch (error) {
+            console.error('Ballot submission error:', error);
+            voteMessage.textContent = `Error: ${error.message}`;
+            voteMessage.classList.add('error');
+            hideModal();
+        }
+    });
+}
+
+/**
  * Creates a downloadable text file from a string of content.
  * @param {string} textContent - The content to be put in the text file.
  * @param {string} fileName - The name of the file to be downloaded (e.g., "my_vote.txt").
@@ -185,6 +282,7 @@ export function initVotePage() {
     const bookList = document.getElementById('book-list');
     const rankedChoiceList = document.getElementById('ranked-choice-list');
     const submitBallotButton = document.getElementById('submit-ballot-button');
+    const cumulativeVoteForm = document.getElementById('cumulative-vote-form');
     const exportButton = document.getElementById('export-button');
 
     // Initialize plurality voting logic if its elements exist
@@ -202,6 +300,20 @@ export function initVotePage() {
         if (submitBallotButton) {
             submitBallotButton.addEventListener('click', handleBallotSubmit);
         }
+    }
+
+    // NEW: Initialize cumulative voting logic
+    if (cumulativeVoteForm) {
+        const pointsPerVoter = parseInt(cumulativeVoteForm.dataset.pointsPerVoter, 10);
+        
+        // Add event listener to the form for input changes
+        cumulativeVoteForm.addEventListener('input', () => handleCumulativeInputChange(pointsPerVoter));
+        
+        // Add event listener for form submission
+        cumulativeVoteForm.addEventListener('submit', (event) => handleCumulativeBallotSubmit(event, pointsPerVoter));
+
+        // Initial check in case the page loads with pre-filled values
+        handleCumulativeInputChange(pointsPerVoter);
     }
 
     // Initialize shared logic

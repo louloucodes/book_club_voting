@@ -2,6 +2,7 @@ import os
 import json
 from flask import Flask
 from .books import BookStore
+from .voting_manager import VotingManager # Import the new class
 
 def create_app():
     """Create and configure an instance of the Flask application."""
@@ -32,8 +33,13 @@ def create_app():
     except OSError:
         pass
 
-    # Initialize the correct BookStore class
-    app.data_store = BookStore()
+    # Initialize the BookStore
+    app.book_store = BookStore()
+
+    # Get config values to initialize the VotingManager
+    strategy_name = app.config.get('VOTING_SYSTEM', 'plurality')
+    points = app.config.get('POINTS_PER_VOTER', 5)
+    app.voting_manager = VotingManager(strategy_name, points)
 
     # Register blueprints
     from . import main, admin

@@ -14,13 +14,13 @@
 
     <!-- NEW: Tab content panels -->
 
-    <!-- Panel 1: Add Book (active by default) -->
+    <!-- Panel 1: Add Book -->
     <div id="add-book-panel" class="tab-content active">
         <div class="admin-section">
             <h2>Add a New Book</h2>
-            <form id="add-book-form" class="book-form">
+            <form id="add-book-form" method="POST" action="{{ url_for('admin.add_book') }}">
                 <div class="form-group">
-                    <label for="title">Book Title</label>
+                    <label for="title">Book Title:</label>
                     <input type="text" id="title" name="title" required>
                 </div>
                 <div class="form-group">
@@ -43,12 +43,13 @@
             <h2>Manage Existing Books</h2>
             <p class="instructions">Drag and drop to reorder the books.</p>
             <ul id="manage-book-list">
+                {% if books %} {# Fix 5: Ensure books variable exists #}
                 {% for book in books %}
                 <li class="book-item" data-id="{{ book.id }}" id="manage-item-{{ book.id }}">
                     <span class="drag-handle">&#x2630;</span>
                     <div class="book-cover">
                         {% if book.cover_image_url %}
-                            <img src="{{ book.cover_image_url }}" alt="Cover of {{ book.title }}">
+                            <img src="{{ book.cover_image_url }}" alt="Cover of {{ book.title }}" width="50" height="75"> {# Fix 6: Add width/height #}
                         {% else %}
                             <div class="cover-placeholder">No Image</div>
                         {% endif %}
@@ -64,9 +65,10 @@
                         <strong>{{ book.suggested_by }}</strong>
                     </div>
                     {% endif %}
-                    <button class="delete-button" data-id="{{ book.id }}">&times;</button>
+                    <button class="delete-button" data-id="{{ book.id }}" aria-label="Delete book">&times;</button> {# Fix 7: Add aria-label #}
                 </li>
                 {% endfor %}
+                {% endif %}
             </ul>
             <button id="save-order-button" class="submit-button" style="display: none;">Save New Order</button>
             <div id="order-message" class="form-message"></div>
@@ -80,7 +82,7 @@
             <form id="voting-system-form">
                 <p>Current system: <strong>{{ config.VOTING_SYSTEM|replace('_', ' ')|title }}</strong></p>
                 <div class="form-group">
-                    <label>Select a new voting system:</label>
+                    <p class="form-label">Select a new voting system:</p> {# Fix 1: Use a <p> tag instead of a disconnected <label> #}
                     <div class="radio-group">
                         <div class="radio-option">
                             <input type="radio" id="ranked_choice" name="voting_system" value="ranked_choice" {% if config.VOTING_SYSTEM == 'ranked_choice' %}checked{% endif %}>
@@ -90,7 +92,16 @@
                             <input type="radio" id="plurality" name="voting_system" value="plurality" {% if config.VOTING_SYSTEM == 'plurality' %}checked{% endif %}>
                             <label for="plurality">Plurality</label>
                         </div>
+                        <div class="radio-option">
+                            <input type="radio" id="cumulative" name="voting_system" value="cumulative" {% if config.VOTING_SYSTEM == 'cumulative' %}checked{% endif %}>
+                            <label for="cumulative">Cumulative</label>
+                        </div>
                     </div>
+                </div>
+                {# Fix 4: The inline style is kept for functionality, but toggling a class in JS is better practice #}
+                <div class="form-group" id="cumulative-points-group" style="display: {% if config.VOTING_SYSTEM == 'cumulative' %}block{% else %}none{% endif %}; margin-top: 10px;">
+                    <label for="points_per_voter">Points per voter:</label>
+                    <input type="number" id="points_per_voter" name="points_per_voter" min="1" value="{{ config.POINTS_PER_VOTER|default(5) }}"> {# Fix 3: Use default filter #}
                 </div>
                 <button type="submit" class="submit-button">Save Settings</button>
             </form>
@@ -100,5 +111,6 @@
 {% endblock %}
 
 {% block scripts %}
-    <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {{ super() }} {# This includes any scripts from base.html #}
+    <script type="module" src="{{ url_for('static', filename='js/admin.js') }}"></script>
 {% endblock %}

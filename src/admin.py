@@ -44,50 +44,66 @@ def logout():
 
 @admin_bp.route('/')
 @admin_required
-def panel():
-    """Renders the admin panel for managing books."""
-    # MODIFIED: Access data_store from current_app
-    current_app.data_store.load_books()
-    return render_template('admin.html', books=current_app.data_store.books)
+def admin_page():
+    """Renders the main admin panel."""
+    return render_template('admin.html', books=current_app.book_store.books)
 
 @admin_bp.route('/add_book', methods=['POST'])
 @admin_required
 def add_book():
+    """Adds a new book to the list."""
+    # FIX: Revert to request.get_json() because the JS sends JSON data.
     data = request.get_json()
-    if not data or not data.get('title') or not data.get('author'):
-        return jsonify(success=False, message="Title and Author are required."), 400
+    if not data:
+        return jsonify(success=False, message="Invalid request format."), 400
 
+    title = data.get('title')
+    author = data.get('author')
+    # FIX: The form sends 'suggested_by', not 'suggester'.
+    suggester = data.get('suggested_by')
+    
+    if not all([title, author, suggester]):
+        return jsonify(success=False, message="Title, author, and suggester are required."), 400
+
+    # FIX: Create a dictionary to pass to the flexible add_book method.
     new_book_data = {
-        "id": f"book_{uuid.uuid4().hex}",
-        "title": data.get('title'),
-        "author": data.get('author'),
-        "suggested_by": data.get('suggested_by', 'N/A')
+        "title": title,
+        "author": author,
+        "suggested_by": suggester
     }
-    # MODIFIED: Access data_store from current_app
-    new_book = current_app.data_store.add_book(new_book_data)
+    new_book = current_app.book_store.add_book(new_book_data)
     return jsonify(success=True, book=new_book.__dict__)
 
-@admin_bp.route('/delete_book/<string:book_id>', methods=['POST'])
+@admin_bp.route('/delete_book/<string:book_id>', methods=['DELETE'])
 @admin_required
 def delete_book(book_id):
-    # MODIFIED: Access data_store from current_app
-    success = current_app.data_store.delete_book(book_id)
+    """Deletes a book from the list."""
+    success = current_app.book_store.delete_book(book_id)
     if success:
         return jsonify(success=True, message="Book deleted successfully.")
-    return jsonify(success=False, message="Book not found."), 404
+    else:
+        return jsonify(success=False, message="Book not found."), 404
 
 @admin_bp.route('/update_order', methods=['POST'])
 @admin_required
 def update_order():
-    ordered_ids = request.get_json().get('order')
-    if not ordered_ids:
-        return jsonify(success=False, message="Missing order data"), 400
+    """Updates the order of the books."""
+    data = request.get_json()
+    new_order = data.get('order')
+    if not new_order:
+        return jsonify(success=False, message="Missing order data."), 400
     
-    # MODIFIED: Access data_store from current_app
-    success = current_app.data_store.update_order(ordered_ids)
-    if success:
-        return jsonify(success=True, message="Book order updated successfully.")
-    return jsonify(success=False, message="Failed to update book order."), 500
+    current_app.book_store.update_book_order(new_order)
+    return jsonify(success=True, message="Book order updated.")
+
+
+@admin_bp.route('/calculate_results', methods=['POST'])
+@admin_required
+def calculate_results():
+    """Calculates and returns the winner based on the current voting system."""
+    books = current_app.book_store.books
+    results = current_app.voting_manager.calculate_results(books)
+    return jsonify(results)
 
 # NEW: Route to update the voting system setting
 @admin_bp.route('/update_settings', methods=['POST'])
@@ -95,8 +111,9 @@ def update_order():
 def update_settings():
     data = request.get_json()
     new_system = data.get('voting_system')
+    points_per_voter = data.get('points_per_voter', 5)
 
-    if new_system not in ['ranked_choice', 'plurality']:
+    if new_system not in ['ranked_choice', 'plurality', 'cumulative']:
         return jsonify(success=False, message="Invalid voting system specified."), 400
 
     try:
@@ -104,19 +121,23 @@ def update_settings():
         with open('data/settings.json', 'r') as f:
             settings = json.load(f)
         
-        # Update the voting system
+        # Update the voting system and points
         settings['VOTING_SYSTEM'] = new_system
+        if new_system == 'cumulative':
+            settings['POINTS_PER_VOTER'] = int(points_per_voter)
         
         # Write the new settings back to the file
         with open('data/settings.json', 'w') as f:
             json.dump(settings, f, indent=4)
         
         # Also update the config of the currently running app
-        current_app.config['VOTING_SYSTEM'] = new_system
+        current_app.config.update(settings)
         
-        flash('Voting system updated successfully!', 'success')
-        return jsonify(success=True, message="Settings updated.")
+        # CRITICAL FIX: Re-initialize the voting strategy in the voting_manager
+        current_app.voting_manager.set_voting_strategy()
 
-    except (IOError, json.JSONDecodeError) as e:
+        return jsonify(success=True, message="Settings updated successfully.")
+
+    except (IOError, ValueError) as e:
         print(f"Error updating settings: {e}")
         return jsonify(success=False, message="Could not save settings file."), 500

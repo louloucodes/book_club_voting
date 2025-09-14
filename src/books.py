@@ -7,13 +7,12 @@ from .book import Book
 from .voting import get_voting_strategy
 from .utils import enrich_single_book
 
-BOOKS_FILE = 'data/books.json'
-
 class BookStore:
     """A simple class to hold and manage the application's data."""
     # MODIFIED: Initialize with a default strategy
     def __init__(self):
-        self.books = []
+        self.books_file = 'data/books.json'
+        self.books = self.load_books() # Initialize and load books
         self._loaded = False
         self.voting_strategy = None # Will be set by the app factory
 
@@ -23,24 +22,23 @@ class BookStore:
 
     def load_books(self):
         """Loads books from JSON and converts them into Book objects."""
-        if self.books:
-            return
-        
         try:
-            with open(BOOKS_FILE, 'r') as f:
+            with open(self.books_file, 'r') as f:
                 raw_data = json.load(f)
                 # MODIFIED: Create a list of Book objects instead of dicts.
-                self.books = [Book(item) for item in raw_data]
-            print(f"Successfully loaded {len(self.books)} books.")
-        except FileNotFoundError:
-            print(f"ERROR: {BOOKS_FILE} not found. Please create it.")
-            self.books = []
-        except json.JSONDecodeError:
-            print(f"ERROR: Could not decode {BOOKS_FILE}. Check for syntax errors.")
-            self.books = []
+                return [Book(item) for item in raw_data]
+        except (FileNotFoundError, json.JSONDecodeError):
+            return [] # Return an empty list on error
 
-        self._loaded = True
-        # REMOVED: self.votes = {book.id: 0 for book in self.books}
+    def save_books(self):
+        """Saves the current list of books to the JSON file."""
+        all_books_raw = [b.__dict__ for b in self.books]
+        
+        try:
+            with open(self.books_file, 'w') as f:
+                json.dump(all_books_raw, f, indent=4)
+        except IOError as e:
+            print(f"ERROR: Could not write to {self.books_file}. {e}")
 
     def add_book(self, new_book_data: dict):
         """Enriches a new book, adds it to the store, and saves to file."""
@@ -57,17 +55,8 @@ class BookStore:
         self.books.append(new_book_obj)
         
         # Save the updated book list to the JSON file
-        all_books_raw = [b.__dict__ for b in self.books]
-        
-        try:
-            with open(BOOKS_FILE, 'w') as f:
-                json.dump(all_books_raw, f, indent=4)
-            return new_book_obj # Return the object on successful save
-        except IOError as e:
-            print(f"ERROR: Could not write to {BOOKS_FILE}. {e}")
-            # If saving fails, we should roll back the change to the in-memory list
-            self.books.pop()
-            return None # Signal failure
+        self.save_books()
+        return new_book_obj # Return the object on successful save
 
     def delete_book(self, book_id: str) -> bool:
         """Removes a book by its ID from the store and saves to file."""
@@ -79,12 +68,12 @@ class BookStore:
 
         # Read the current file, filter out the book, and write back
         try:
-            with open(BOOKS_FILE, 'r') as f:
+            with open(self.books_file, 'r') as f:
                 all_books = json.load(f)
             
             filtered_books = [b for b in all_books if b['id'] != book_id]
 
-            with open(BOOKS_FILE, 'w') as f:
+            with open(self.books_file, 'w') as f:
                 json.dump(filtered_books, f, indent=4)
             
             return True
@@ -111,7 +100,7 @@ class BookStore:
         raw_books_to_save = [book.__dict__ for book in self.books]
         
         try:
-            with open(BOOKS_FILE, 'w') as f:
+            with open(self.books_file, 'w') as f:
                 json.dump(raw_books_to_save, f, indent=4)
             return True
         except IOError:
