@@ -5,84 +5,100 @@
 {% block content %}
     <h1>Admin Panel</h1>
 
-    <div class="admin-section">
-        <h2>Add a New Book</h2>
-        <form id="add-book-form" class="book-form">
-            <div class="form-group">
-                <label for="title">Book Title</label>
-                <input type="text" id="title" name="title" required>
-            </div>
-            <div class="form-group">
-                <label for="author">Author</label>
-                <input type="text" id="author" name="author" required>
-            </div>
-            <div class="form-group">
-                <label for="suggested_by">Suggested by</label>
-                <input type="text" id="suggested_by" name="suggested_by">
-            </div>
-            <button type="submit" class="submit-button">Add Book</button>
-        </form>
-        <div id="form-message" class="form-message"></div>
+    <!-- NEW: Tab navigation structure -->
+    <div class="tab-container">
+        <button class="tab-link active" data-target="add-book-panel">Add New Book</button>
+        <button class="tab-link" data-target="manage-books-panel">Manage Existing Books</button>
+        <button class="tab-link" data-target="settings-panel">Settings</button>
     </div>
 
-    <div class="admin-section">
-        <h2>Manage Existing Books</h2>
-        <p class="instructions">Drag and drop to reorder the books.</p>
-        <!-- MODIFIED: The list now uses the .book-item structure -->
-        <ul id="manage-book-list">
-            {% for book in books %}
-            <li class="book-item" data-id="{{ book.id }}" id="manage-item-{{ book.id }}">
-                <span class="drag-handle">&#x2630;</span>
-                <div class="book-cover">
-                    {% if book.cover_image_url %}
-                        <img src="{{ book.cover_image_url }}" alt="Cover of {{ book.title }}">
-                    {% else %}
-                        <div class="cover-placeholder">No Image</div>
+    <!-- NEW: Tab content panels -->
+
+    <!-- Panel 1: Add Book (active by default) -->
+    <div id="add-book-panel" class="tab-content active">
+        <div class="admin-section">
+            <h2>Add a New Book</h2>
+            <form id="add-book-form" class="book-form">
+                <div class="form-group">
+                    <label for="title">Book Title</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="author">Author</label>
+                    <input type="text" id="author" name="author" required>
+                </div>
+                <div class="form-group">
+                    <label for="suggested_by">Suggested by</label>
+                    <input type="text" id="suggested_by" name="suggested_by">
+                </div>
+                <button type="submit" class="submit-button">Add Book</button>
+            </form>
+            <div id="form-message" class="form-message"></div>
+        </div>
+    </div>
+
+    <!-- Panel 2: Manage Books -->
+    <div id="manage-books-panel" class="tab-content">
+        <div class="admin-section">
+            <h2>Manage Existing Books</h2>
+            <p class="instructions">Drag and drop to reorder the books.</p>
+            <ul id="manage-book-list">
+                {% for book in books %}
+                <li class="book-item" data-id="{{ book.id }}" id="manage-item-{{ book.id }}">
+                    <span class="drag-handle">&#x2630;</span>
+                    <div class="book-cover">
+                        {% if book.cover_image_url %}
+                            <img src="{{ book.cover_image_url }}" alt="Cover of {{ book.title }}">
+                        {% else %}
+                            <div class="cover-placeholder">No Image</div>
+                        {% endif %}
+                    </div>
+                    <div class="book-info">
+                        <h2 class="book-title">{{ book.title }}</h2>
+                        <p class="book-author">by {{ book.author }}</p>
+                        <p class="book-publication-date">Published: {{ book.published_date }}</p>
+                    </div>
+                    {% if config.SHOW_SUGGESTER %}
+                    <div class="book-suggester">
+                        <p>Suggested by:</p>
+                        <strong>{{ book.suggested_by }}</strong>
+                    </div>
                     {% endif %}
-                </div>
-                <div class="book-info">
-                    <h2 class="book-title">{{ book.title }}</h2>
-                    <p class="book-author">by {{ book.author }}</p>
-                    <!-- MODIFIED: Use 'published_date' to match the Book object -->
-                    <p class="book-publication-date">Published: {{ book.published_date }}</p>
-                </div>
-                {% if config.SHOW_SUGGESTER %}
-                <div class="book-suggester">
-                    <p>Suggested by:</p>
-                    <strong>{{ book.suggested_by }}</strong>
-                </div>
-                {% endif %}
-                <button class="delete-button" data-id="{{ book.id }}">&times;</button>
-            </li>
-            {% endfor %}
-        </ul>
-        <button id="save-order-button" class="submit-button" style="display: none;">Save New Order</button>
-        <div id="order-message" class="form-message"></div>
+                    <button class="delete-button" data-id="{{ book.id }}">&times;</button>
+                </li>
+                {% endfor %}
+            </ul>
+            <button id="save-order-button" class="submit-button" style="display: none;">Save New Order</button>
+            <div id="order-message" class="form-message"></div>
+        </div>
     </div>
 
-    <!-- NEW: Section for voting system settings -->
-    <div class="admin-section">
-        <h2>Voting System Settings</h2>
-        <form id="voting-system-form">
-            <p>Current system: <strong>{{ config.VOTING_SYSTEM|replace('_', ' ')|title }}</strong></p>
-            <div class="form-group">
-                <label>Select a new voting system:</label>
-                <div class="radio-group">
-                    <input type="radio" id="ranked_choice" name="voting_system" value="ranked_choice" {% if config.VOTING_SYSTEM == 'ranked_choice' %}checked{% endif %}>
-                    <label for="ranked_choice">Ranked Choice</label>
+    <!-- Panel 3: Settings -->
+    <div id="settings-panel" class="tab-content">
+        <div class="admin-section">
+            <h2>Voting System Settings</h2>
+            <form id="voting-system-form">
+                <p>Current system: <strong>{{ config.VOTING_SYSTEM|replace('_', ' ')|title }}</strong></p>
+                <div class="form-group">
+                    <label>Select a new voting system:</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="ranked_choice" name="voting_system" value="ranked_choice" {% if config.VOTING_SYSTEM == 'ranked_choice' %}checked{% endif %}>
+                            <label for="ranked_choice">Ranked Choice</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="plurality" name="voting_system" value="plurality" {% if config.VOTING_SYSTEM == 'plurality' %}checked{% endif %}>
+                            <label for="plurality">Plurality</label>
+                        </div>
+                    </div>
                 </div>
-                <div class="radio-group">
-                    <input type="radio" id="plurality" name="voting_system" value="plurality" {% if config.VOTING_SYSTEM == 'plurality' %}checked{% endif %}>
-                    <label for="plurality">Plurality</label>
-                </div>
-            </div>
-            <button type="submit" class="submit-button">Save Settings</button>
-        </form>
-        <div id="settings-message" class="form-message"></div>
+                <button type="submit" class="submit-button">Save Settings</button>
+            </form>
+            <div id="settings-message" class="form-message"></div>
+        </div>
     </div>
 {% endblock %}
 
 {% block scripts %}
-    <!-- MODIFIED: Load main.js as a module. It will import SortableJS itself. -->
     <script type="module" src="{{ url_for('static', filename='js/main.js') }}"></script>
 {% endblock %}

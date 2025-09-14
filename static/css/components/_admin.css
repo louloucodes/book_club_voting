@@ -39,6 +39,119 @@
     line-height: 1;
 }
 
-.delete-button:hover {
-    color: #a71d2a;
+/* --- Tab Styles --- */
+.tab-container {
+    display: flex;
+    border-bottom: 2px solid #ccc;
+    margin-bottom: 20px;
+}
+
+.tab-link {
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    margin-right: 5px;
+    border-radius: 5px 5px 0 0;
+    font-size: 1em;
+    position: relative;
+    top: 2px;
+}
+
+.tab-link.active {
+    background-color: #fff;
+    border-bottom: 2px solid #fff;
+    font-weight: bold;
+}
+
+.tab-content {
+    display: none; /* Hide all tab content by default */
+}
+
+.tab-content.active {
+    display: block; /* Show only the active tab content */
+}
+
+/* --- General Admin Styles --- */
+.admin-section {
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+/* For tabbed layout, remove the border from the section itself */
+.tab-content .admin-section {
+    border: none;
+    padding: 20px; /* restore padding */
+}
+
+.admin-section h2 {
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+#manage-book-list {
+    list-style: none;
+    padding: 0;
+}
+
+#manage-book-list .book-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.delete-button {
+    margin-left: auto;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2em;
+    line-height: 1;
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+    width: fit-content;
+    max-width: 100%;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    width: fit-content;
+    flex: 0 0 auto;
+}
+
+.radio-option label {
+    margin: 0;
+    font-weight: normal;
+    white-space: nowrap;
+}
+
+.radio-option input[type="radio"] {
+    width: 16px;
+    min-width: 16px;
+    max-width: 16px;
+    margin-right: 8px; /* ensures space between button and label */
+    accent-color: #007bff; /* keep your custom color */
 }

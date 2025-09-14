@@ -28,31 +28,31 @@
         "publisher": "Catapult"
     },
     {
-        "id": "book_3",
+        "id": "book_93ac127b0f494379803fd0e5b1920355",
         "title": "Circe",
         "author": "Madeline Miller",
-        "suggested_by": "Charlie",
-        "published_date": "2019-04-22",
-        "cover_image_url": "http://books.google.com/books/content?id=GrGdDwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
-        "summary": "Di istana Helios, dewa matahari, lahir seorang anak perempuan. Tetapi Circe anak yang aneh\u2013\u2013tidak berkuasa seperti ayahnya, juga tidak memikat seperti ibunya. Karena tak punya teman, Circe mencarinya di dunia manusia, dan mengembangkan kemampuannya sebagai penyihir. Zeus, yang merasa terancam, mengasingkannya ke pulau terpencil. Circe mengasah bakatnya dan bertemu banyak tokoh paling termasyhur dalam mitologi, di antaranya Minotaur, Daedalus dan Icarus, Medea, dan Odysseus yang lihai. Tetapi wanita yang hanya sendirian menghadapi banyak bahaya, dan Circe tanpa sengaja membangkitkan murka manusia dan dewa-dewa, sehingga mesti berhadapan dengan dewa Olympus yang paling menakutkan dan pendendam. Untuk melindungi apa yang paling dicintainya, Circe harus mengerahkan seluruh kekuatannya dan memilih dengan tegas, apakah hendak berpihak kepada dewa-dewa yang telah melahirkannya, atau manusia yang telanjur disayanginya.",
-        "page_count": 546,
-        "categories": [
-            "Juvenile Fiction"
-        ],
-        "publisher": "Gramedia pustaka utama"
-    },
-    {
-        "id": "book_461030e467cf4031942469a2d08d9a53",
-        "title": "Ender's Game",
-        "author": "Orson Scott Card",
-        "suggested_by": "Tom",
-        "published_date": "2013-09-17",
-        "cover_image_url": "http://books.google.com/books/content?id=_ZghmgEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api",
-        "summary": "FEATURING: Ender's Game (978-0-8125-5070-2, $6.99/$8.99) Ender's Shadow (978-0-8125-7571-2, $8.99/$10.99) Shadow of the Hegemon (978-0-8125-6595-9, $7.99/$9.99)",
-        "page_count": 0,
+        "suggested_by": "Amy",
+        "published_date": "2018-02-20",
+        "cover_image_url": "http://books.google.com/books/content?id=qZRODwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+        "summary": "\"A bold and subversive retelling of the goddess's story,\" this #1 New York Times bestseller is \"both epic and intimate in its scope, recasting the most infamous female figure from the Odyssey as a hero in her own right\" (Alexandra Alter, The New York Times). In the house of Helios, god of the sun and mightiest of the Titans, a daughter is born. But Circe is a strange child -- not powerful, like her father, nor viciously alluring like her mother. Turning to the world of mortals for companionship, she discovers that she does possess power -- the power of witchcraft, which can transform rivals into monsters and menace the gods themselves. Threatened, Zeus banishes her to a deserted island, where she hones her occult craft, tames wild beasts and crosses paths with many of the most famous figures in all of mythology, including the Minotaur, Daedalus and his doomed son Icarus, the murderous Medea, and, of course, wily Odysseus. But there is danger, too, for a woman who stands alone, and Circe unwittingly draws the wrath of both men and gods, ultimately finding herself pitted against one of the most terrifying and vengeful of the Olympians. To protect what she loves most, Circe must summon all her strength and choose, once and for all, whether she belongs with the gods she is born from, or the mortals she has come to love. With unforgettably vivid characters, mesmerizing language, and page-turning suspense, Circe is a triumph of storytelling, an intoxicating epic of family rivalry, palace intrigue, love and loss, as well as a celebration of indomitable female strength in a man's world. #1 New York Times Bestseller -- named one of the Best Books of the Year by NPR, the Washington Post, People, Time, Amazon, Entertainment Weekly, Bustle, Newsweek, the A.V. Club, Christian Science Monitor, Refinery 29, Buzzfeed, Paste, Audible, Kirkus, Publishers Weekly, Thrillist, NYPL, Self, Real Simple, Goodreads, Boston Globe, Electric Literature, BookPage, the Guardian, Book Riot, Seattle Times, and Business Insider.",
+        "page_count": 32,
         "categories": [
             "Fiction"
         ],
-        "publisher": "Tor Science Fiction"
+        "publisher": "Little, Brown"
+    },
+    {
+        "id": "book_dc517ae6a2f14acbbd1db0ee6e73e865",
+        "title": "Ender's Game",
+        "author": "Orson Scott Card",
+        "suggested_by": "Tom",
+        "published_date": "2017-10-17",
+        "cover_image_url": "http://books.google.com/books/content?id=jaM7DwAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api",
+        "summary": "This engaging, collectible, miniature hardcover of the Orson Scott Card classic and worldwide bestselling novel, Ender's Game, makes an excellent gift for anyone's science fiction library. \"Ender's Game is an affecting novel.\"--New York Times Book Review Once again, Earth is under attack. An alien species is poised for a final assault. The survival of humanity depends on a military genius who can defeat the aliens. But who? Ender Wiggin. Brilliant. Ruthless. Cunning. A tactical and strategic master. And a child. Recruited for military training by the world government, Ender's childhood ends the moment he enters his new home: Battle School. Among the elite recruits Ender proves himself to be a genius among geniuses. He excels in simulated war games. But is the pressure and loneliness taking its toll on Ender? Simulations are one thing. How will Ender perform in real combat conditions? After all, Battle School is just a game. Isn't it? THE ENDER UNIVERSE Ender series Ender's Game / Ender in Exile / Speaker for the Dead / Xenocide / Children of the Mind Ender's Shadow series Ender's Shadow / Shadow of the Hegemon / Shadow Puppets / Shadow of the Giant / Shadows in Flight Children of the Fleet The First Formic War (with Aaron Johnston) Earth Unaware / Earth Afire / Earth Awakens The Second Formic War (with Aaron Johnston) The Swarm /The Hive Ender novellas A War of Gifts /First Meetings",
+        "page_count": 448,
+        "categories": [
+            "Fiction"
+        ],
+        "publisher": "Tor Books"
     }
 ]

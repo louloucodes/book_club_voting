@@ -173,6 +173,33 @@ async function handleSettingsSubmit(event) {
     }
 }
 
+/**
+ * Handles the logic for switching between admin tabs.
+ */
+function handleTabSwitching(event) {
+    // Ensure the clicked element is a tab link
+    if (!event.target.classList.contains('tab-link')) {
+        return;
+    }
+
+    const clickedTab = event.target;
+    const targetPanelId = clickedTab.dataset.target;
+    const targetPanel = document.getElementById(targetPanelId);
+
+    // Remove 'active' class from all tabs and panels
+    document.querySelectorAll('.tab-link').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    document.querySelectorAll('.tab-content').forEach(panel => {
+        panel.classList.remove('active');
+    });
+
+    // Add 'active' class to the clicked tab and its corresponding panel
+    clickedTab.classList.add('active');
+    if (targetPanel) {
+        targetPanel.classList.add('active');
+    }
+}
 
 // --- Initialization for Admin Page ---
 export function initAdminPage() {
@@ -202,5 +229,11 @@ export function initAdminPage() {
     // NEW: Add event listener for the settings form
     if (settingsForm) {
         settingsForm.addEventListener('submit', handleSettingsSubmit);
+    }
+
+    // NEW: Add event listener for the tab container
+    const tabContainer = document.querySelector('.tab-container');
+    if (tabContainer) {
+        tabContainer.addEventListener('click', handleTabSwitching);
     }
 }
