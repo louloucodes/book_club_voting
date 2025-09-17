@@ -27,6 +27,9 @@
                         <h2 class="book-title">{{ book.title }}</h2>
                         <p class="book-author">by {{ book.author }}</p>
                         <p class="book-publication-date">Published: {{ book.published_date }}</p>
+                        {% if book.page_count %}
+                            <p class="book-page-count">{{ book.page_count }} pages</p>
+                        {% endif %}
                     </div>
                     {% if config.SHOW_SUGGESTER %}
                     <div class="book-suggester">
@@ -63,6 +66,9 @@
                     <div class="book-info">
                         <h2 class="book-title">{{ book.title }}</h2>
                         <p class="book-author">by {{ book.author }}</p>
+                        {% if book.page_count %}
+                            <p class="book-page-count">{{ book.page_count }} pages</p>
+                        {% endif %}
                     </div>
                     <div class="cumulative-input">
                         <label for="points-{{ book.id }}">Points:</label>
@@ -98,13 +104,16 @@
                             <h2 class="book-title">{{ book.title }}</h2>
                             <p class="book-author">by {{ book.author }}</p>
                             <p class="book-publication-date">Published: {{ book.published_date }}</p>
+                            {% if book.page_count %}
+                                <p class="book-page-count">{{ book.page_count }} pages</p>
+                            {% endif %}
                             {% if config.SHOW_SUGGESTER %}
                                 <p class="book-suggester-plurality">Suggested by: {{ book.suggested_by }}</p>
                             {% endif %}
                         </div>
                         <div class="vote-section">
                             <button class="vote-button" data-id="{{ book.id }}">Vote</button>
-                            <span class="vote-count" id="votes-{{ book.id }}">0 votes</span>
+                            
                         </div>
                     </div>
                 </div>

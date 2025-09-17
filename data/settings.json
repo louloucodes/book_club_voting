@@ -1,4 +1,4 @@
 {
-    "VOTING_SYSTEM": "cumulative",
+    "VOTING_SYSTEM": "plurality",
     "POINTS_PER_VOTER": 10
 }

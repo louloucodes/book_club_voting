@@ -4,21 +4,23 @@ import uuid # NEW: Import uuid to generate unique IDs
 
 # MODIFIED: Import the correct enrichment function from your existing utils.py
 from .book import Book
-from .voting import get_voting_strategy
+# REMOVED: Voting logic does not belong in the BookStore.
+# from .voting import get_voting_strategy 
 from .utils import enrich_single_book
 
 class BookStore:
     """A simple class to hold and manage the application's data."""
-    # MODIFIED: Initialize with a default strategy
     def __init__(self):
         self.books_file = 'data/books.json'
         self.books = self.load_books() # Initialize and load books
         self._loaded = False
-        self.voting_strategy = None # Will be set by the app factory
+        # REMOVED: The voting_strategy does not belong in the BookStore.
+        # self.voting_strategy = None 
 
-    def set_voting_strategy(self, strategy_name: str):
-        """Sets the voting strategy for the store."""
-        self.voting_strategy = get_voting_strategy(strategy_name)
+    # REMOVED: This method belongs in the VotingManager.
+    # def set_voting_strategy(self, strategy_name: str):
+    #     """Sets the voting strategy for the store."""
+    #     self.voting_strategy = get_voting_strategy(strategy_name)
 
     def load_books(self):
         """Loads books from JSON and converts them into Book objects."""
